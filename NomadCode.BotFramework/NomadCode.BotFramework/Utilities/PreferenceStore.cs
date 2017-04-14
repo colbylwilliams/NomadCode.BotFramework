@@ -1,6 +1,7 @@
 ﻿#if __IOS__ || __ANDROID__
 
 using System;
+using System.Collections.Generic;
 
 #if __IOS__
 using static Foundation.NSUserDefaults;
@@ -21,6 +22,8 @@ namespace NomadCode.BotFramework
         const string currentUserNameStorageKey = "NomadCodeBotFrameworkCurrentUserNameStorageKey";
 
         const string currentUserEmailStorageKey = "NomadCodeBotFrameworkCurrentUserEmailStorageKey";
+
+        const string currentUserAvatarStorageKey = "NomadCodeBotFrameworkCurrentUserAvatarStorageKey";
 
         const string conversationIdStorageKey = "NomadCodeBotFrameworkConversationIdStorageKey";
 
@@ -90,6 +93,7 @@ namespace NomadCode.BotFramework
 
         DateTime dateTimeForKey (string key) => DateTime.TryParse (stringForKey (key), out DateTime outDateTime) ? outDateTime : default (DateTime);
 
+        public static Dictionary<string, string> UserImageDictionary { get; set; }
 
         public void ResetCurrentUser ()
         {
@@ -115,6 +119,10 @@ namespace NomadCode.BotFramework
             get => stringForKey (currentUserEmailStorageKey);
             set => setSetting (currentUserEmailStorageKey, value ?? string.Empty);
         }
+
+        public string GetAvatarUrl (string sid) => stringForKey ($"currentUserAvatarStorageKey{sid}");
+
+        public void SetAvatarUrl (string sid, string url) => setSetting ($"currentUserAvatarStorageKey{sid}", url ?? string.Empty);
 
         public string ConversationId
         {

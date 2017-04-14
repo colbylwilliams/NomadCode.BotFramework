@@ -11,10 +11,8 @@ namespace NomadCode.BotFramework.iOS
     {
         public static readonly nfloat AvatarHeight = 24;
         public static readonly nfloat AutoCompleteHeight = 50;
-
-
-        long loadingTicks;
-
+        public static readonly nfloat AvatarImageHeight = AvatarHeight * UIScreen.MainScreen.Scale;
+        public static readonly (nfloat, nfloat) AvatarImageSize = (AvatarImageHeight, AvatarImageHeight);
 
         #region Views
 
@@ -33,6 +31,7 @@ namespace NomadCode.BotFramework.iOS
             new NSString [] { new NSString (@"avatarSize"), new NSString (@"padding"), new NSString (@"right"), new NSString (@"left"), new NSString (@"leftInset") }
         );
 
+        public override UIImageView ImageView => AvatarView;
 
         public UIStackView ButtonStackView => _buttonStackView ?? (_buttonStackView = MessageCellSubviews.GetButtonStackView ());
 
@@ -50,8 +49,16 @@ namespace NomadCode.BotFramework.iOS
 
         #endregion
 
-
-        public NSIndexPath IndexPath { get; set; }
+        NSIndexPath _indexPath;
+        public NSIndexPath IndexPath
+        {
+            get => _indexPath;
+            set
+            {
+                _indexPath = value;
+                Tag = _indexPath.Row;
+            }
+        }
 
 
         bool? _isHeaderCell;
@@ -110,22 +117,22 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public long SetMessage (DateTime? timestamp, string username, NSAttributedString attrMessage, params string [] buttonTitles)
+        public void SetMessage (DateTime? timestamp, string username, NSAttributedString attrMessage, params string [] buttonTitles)
         {
-            loadingTicks = DateTime.UtcNow.Ticks;
+            //loadingTicks = DateTime.UtcNow.Ticks;
 
             TitleLabel.Text = username;
             TimestampLabel.Text = timestamp?.ToShortTimeString ();
 
             SetMessage (attrMessage, buttonTitles);
 
-            return loadingTicks;
+            //return loadingTicks;
         }
 
 
-        public bool SetAvatar (long key, UIImage avatar)
+        public bool SetAvatar (int key, UIImage avatar)
         {
-            var same = key == loadingTicks;
+            var same = key == Tag;
 
             AvatarView.Image = same ? avatar : null;
 

@@ -234,12 +234,6 @@ namespace NomadCode.BotFramework.iOS
             => tableView.Equals (TableView) ? Messages.GetMessageHeight (tableView, indexPath)
                                             : MessageCell.AutoCompleteHeight;
 
-
-        [Export ("tableView:heightForFooterInSection:")]
-        public nfloat GetHeightForFooter (UITableView tableView, nint section)
-            => tableView.Equals (TableView) ? 60.0f
-                                            : 0.0f;
-
         #endregion
 
 

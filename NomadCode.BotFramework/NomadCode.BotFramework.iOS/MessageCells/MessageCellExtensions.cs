@@ -5,132 +5,195 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 
+using Haneke;
+using System.Threading.Tasks;
+
 namespace NomadCode.BotFramework.iOS
 {
-	public static class MessageCellExtensions
-	{
-		public static MessageCell GetMessageCell (this List<BotMessage> messages, UITableView tableView, NSIndexPath indexPath)
-		{
-			if (messages?.Count > 0 && messages.Count > indexPath.Row)
-			{
-				var message = messages [indexPath.Row];
+    public static class MessageCellExtensions
+    {
+        public static MessageCell GetMessageCell (this List<BotMessage> messages, UITableView tableView, NSIndexPath indexPath)
+        {
+            var row = indexPath.Row;
 
-				var reuseId = message.Head ? MessageCellReuseIds.MessageHeaderCellReuseId : MessageCellReuseIds.MessageCellReuseId;
+            if (messages?.Count > 0 && messages.Count > row)
+            {
+                var message = messages [row];
 
-				var cell = tableView.DequeueReusableCell (reuseId, indexPath) as MessageCell;
+                var reuseId = message.Head ? MessageCellReuseIds.MessageHeaderCellReuseId : MessageCellReuseIds.MessageCellReuseId;
 
-				if (message.Head)
-				{
-					cell.IndexPath = indexPath;
+                var cell = tableView.DequeueReusableCell (reuseId, indexPath) as MessageCell;
 
-					var key = cell.SetMessage (message.LocalTimeStamp, message.Activity.From.Name, message.AttributedText);
+                cell.IndexPath = indexPath;
 
-					if (message.Activity.From.Id == "DigitalAgencies")
-					{
-						cell.SetAvatar (key, UIImage.FromBundle ("avatar_microsoft"));
-					}
-					else
-					{
-						cell.SetAvatar (key, UIImage.FromBundle ("avatar_colby"));
-					}
-				}
-				else
-				{
-					cell.IndexPath = indexPath;
+                if (message.Head)
+                {
+                    cell.SetMessage (message.LocalTimeStamp, message.Activity?.From?.Name, message.AttributedText);
 
-					cell.SetMessage (message.AttributedText);
+                    cell?.ImageView.SetCacheFormat (getCacheFormat (MessageCell.AvatarImageSize));
 
-					//bodyCell.UsedForMessage = true;
-				}
+                    if (message.Activity.From.Id == "DigitalAgencies")
+                    {
+                        cell.SetAvatar (indexPath.Row, UIImage.FromBundle ("avatar_microsoft"));
+                    }
+                    else
+                    {
+                        var avatarUrl = string.IsNullOrEmpty (message.Activity?.From?.Id) ? string.Empty : BotClient.Shared.GetAvatarUrl (message.Activity.From.Id);
 
-				// Cells must inherit the table view's transform
-				// This is very important, since the main table view may be inverted
-				cell.Transform = tableView.Transform;
+                        if (string.IsNullOrEmpty (avatarUrl))
+                        {
+                            cell.SetAvatar (indexPath.Row, null);
+                        }
+                        else
+                        {
+                            var placeholder = getPlaceholderImage (MessageCell.AvatarImageSize);
 
-				//Log.Debug($"{cell.BodyLabel.Bounds.Width}");
+                            using (NSUrl url = new NSUrl (avatarUrl))
+                            {
+                                cell?.ImageView.SetImage (url, placeholder, (img) => cell.SetAvatar (indexPath.Row, img), (err) =>
+                                {
+                                    cell.SetAvatar (indexPath.Row, null);
 
-				return cell;
-			}
+                                    Log.Debug (err.LocalizedDescription);
+                                });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    cell.SetMessage (message.AttributedText);
+                }
 
-			return null;
-		}
+                // Cells must inherit the table view's transform
+                // This is very important, since the main table view may be inverted
+                cell.Transform = tableView.Transform;
 
-		public static MessageCell GetAutoCompleteCell (this List<(string Id, string Name)> items, UITableView tableView, NSIndexPath indexPath)
-		{
-			if (items?.Count > 0 && items.Count > indexPath.Row)
-			{
-				//Log.Debug ($"GetAutoCompleteCell = [{indexPath}]");
+                //Log.Debug($"{cell.BodyLabel.Bounds.Width}");
 
-				var cell = tableView.DequeueReusableCell (MessageCellReuseIds.AutoCompleteReuseId, indexPath) as MessageCell;
-				cell.IndexPath = indexPath;
+                return cell;
+            }
 
-				var text = items [indexPath.Row].Name;
-
-				//if (FoundPrefix.Equals (hashStr))
-				//{
-				//  text = $"# {text}";
-				//}
-				//else if (FoundPrefix.Equals (colonStr) || FoundPrefix.Equals (plusColonStr))
-				//{
-				//  text = $":{text}:";
-				//}
-
-				cell.TitleLabel.Text = text;
-				cell.SelectionStyle = UITableViewCellSelectionStyle.Default;
-
-				return cell;
-			}
-
-			return null;
-		}
+            return null;
+        }
 
 
-		public static nfloat GetMessageHeight (this List<BotMessage> messages, UITableView tableView, NSIndexPath indexPath)
-		{
-			var width = tableView.Frame.Width;
+        static Dictionary<(nfloat Width, nfloat Height), UIImage> placeholders = new Dictionary<(nfloat Width, nfloat Height), UIImage> ();
 
-			var row = indexPath.Row;
+        static UIImage getPlaceholderImage ((nfloat Width, nfloat Height) size)
+        {
+            if (!placeholders.TryGetValue (size, out UIImage placeholder))
+            {
+                UIGraphics.BeginImageContextWithOptions (new CGSize (size.Width, size.Height), false, 0);
 
-			if (messages?.Count > 0 && messages.Count > row)
-			{
+                placeholder = UIGraphics.GetImageFromCurrentImageContext ();
 
-				var message = messages [row];
+                UIGraphics.EndImageContext ();
 
-				nfloat height = message.CellHeight;
+                placeholders [size] = placeholder;
+            }
 
-				if (height > 0)
-				{
-					return height;
-				}
+            return placeholder;
+        }
 
-				message.Head = row == messages.Count - 1 || (row + 1 < messages.Count) && (messages [row + 1].Activity.From.Name != message.Activity.From.Name);
 
-				width -= 49;
+        static HNKCacheFormat getCacheFormat ((nfloat Width, nfloat Height) size)
+        {
+            var name = $"avatar{size.GetHashCode ()}";
 
-				if (string.IsNullOrEmpty (message?.Activity.Text)) return 0;
+            var format = HNKCache.SharedCache.Formats [name] as HNKCacheFormat;
 
-				var bodyBounds = message.AttributedText.GetBoundingRect (new CGSize (width, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+            if (format == null)
+            {
+                format = new HNKCacheFormat (name)
+                {
+                    Size = new CGSize (size.Width, size.Height),
+                    ScaleMode = HNKScaleMode.AspectFit,
+                    DiskCapacity = 10 * 1024 * 1024, // 10MB
+                    PreloadPolicy = HNKPreloadPolicy.LastSession
+                };
+            }
 
-				height = bodyBounds.Height + 5;// + 8.5f; // empty stackView = 3.5f + bottom padding = 5
+            return format;
+        }
 
-				//Log.Debug($"{width}");
 
-				if (message.Head) height += 36.5f; // pading(10) + title(21.5) + padding(5) + content(height)
+        public static MessageCell GetAutoCompleteCell (this List<(string Id, string Name)> items, UITableView tableView, NSIndexPath indexPath)
+        {
+            if (items?.Count > 0 && items.Count > indexPath.Row)
+            {
+                //Log.Debug ($"GetAutoCompleteCell = [{indexPath}]");
 
-				//if message has buttons
-				if (message.ButtonCount > 0)
-				{
-					height += (32 * message.ButtonCount);
-					height += 4 * (message.ButtonCount - 1);
-					height += 5;
-				}
+                var cell = tableView.DequeueReusableCell (MessageCellReuseIds.AutoCompleteReuseId, indexPath) as MessageCell;
+                cell.IndexPath = indexPath;
 
-				message.CellHeight = height;
+                var text = items [indexPath.Row].Name;
 
-				return height;
-			}
+                //if (FoundPrefix.Equals (hashStr))
+                //{
+                //  text = $"# {text}";
+                //}
+                //else if (FoundPrefix.Equals (colonStr) || FoundPrefix.Equals (plusColonStr))
+                //{
+                //  text = $":{text}:";
+                //}
 
-			return 0;
-		}
-	}
+                cell.TitleLabel.Text = text;
+                cell.SelectionStyle = UITableViewCellSelectionStyle.Default;
+
+                return cell;
+            }
+
+            return null;
+        }
+
+
+        public static nfloat GetMessageHeight (this List<BotMessage> messages, UITableView tableView, NSIndexPath indexPath)
+        {
+            var width = tableView.Frame.Width;
+
+            var row = indexPath.Row;
+
+            if (messages?.Count > 0 && messages.Count > row)
+            {
+
+                var message = messages [row];
+
+                nfloat height = message.CellHeight;
+
+                if (height > 0)
+                {
+                    return height;
+                }
+
+                message.Head = row == messages.Count - 1 || (row + 1 < messages.Count) && (messages [row + 1].Activity.From.Name != message.Activity.From.Name);
+
+                width -= 49;
+
+                if (string.IsNullOrEmpty (message?.Activity.Text)) return 0;
+
+                var bodyBounds = message.AttributedText.GetBoundingRect (new CGSize (width, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+
+                height = bodyBounds.Height + 5;// + 8.5f; // empty stackView = 3.5f + bottom padding = 5
+
+                //Log.Debug($"{width}");
+
+                if (message.Head) height += 36.5f; // pading(10) + title(21.5) + padding(5) + content(height)
+
+                //if message has buttons
+                if (message.ButtonCount > 0)
+                {
+                    height += (32 * message.ButtonCount);
+                    height += 4 * (message.ButtonCount - 1);
+                    height += 5;
+                }
+
+                message.CellHeight = height;
+
+                return height;
+            }
+
+            return 0;
+        }
+    }
 }
