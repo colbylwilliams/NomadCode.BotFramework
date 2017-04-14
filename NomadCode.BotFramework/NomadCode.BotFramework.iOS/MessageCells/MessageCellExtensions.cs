@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using CoreGraphics;
 using Foundation;
 using UIKit;
 
 using Haneke;
-using System.Threading.Tasks;
 
 namespace NomadCode.BotFramework.iOS
 {
