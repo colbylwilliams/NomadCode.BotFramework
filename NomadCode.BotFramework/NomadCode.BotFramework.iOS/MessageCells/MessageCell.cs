@@ -50,6 +50,7 @@ namespace NomadCode.BotFramework.iOS
 
         #endregion
 
+
         public NSIndexPath IndexPath { get; set; }
 
 
@@ -145,7 +146,6 @@ namespace NomadCode.BotFramework.iOS
             {
                 configureViewsForHeaderCell ();
             }
-
 
             switch (MessageCellType)
             {
