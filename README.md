@@ -8,7 +8,7 @@ Instead of polling GET requests, the library implements WebSockets using [Socket
 
 To make it easy to use anywhere, `NomadCode.BotFramework` is a [shared project][3] with only a few files.  
 
-To use in your project, you can either, clone, [download][4], etc. and reference your local copy int your project.    
+To use in your project, you can either, clone, [download][4], etc. and reference your local copy in your project.    
 
 Or, if you're using Git, you can add it as a submodule with the following command:
 
@@ -28,6 +28,17 @@ NomadCode.BotFramework only contains a few classes, you'll primarily work with: 
 
 
 
+
+# About
+
+Created by [Colby Williams][100]. 
+
+
+## License
+
+Licensed under the MIT License (MIT).  See [LICENSE][101] for details.
+
+
 [0]:https://dev.botframework.com/
 [1]:https://github.com/facebook/SocketRocket
 [2]:https://github.com/square/okhttp
@@ -39,8 +50,8 @@ NomadCode.BotFramework only contains a few classes, you'll primarily work with: 
 [6]:https://docs.botframework.com/en-us/core-concepts/reference/#activity
 
 
-[10]:https://github.com/colbylwilliams/NomadCode.Azure/blob/master/LICENSE
-[11]:https://github.com/colbylwilliams
+[100]:https://github.com/colbylwilliams
+[101]:https://github.com/colbylwilliams/NomadCode.BotFramework/blob/master/LICENSE
 
 [12]:https://docs.microsoft.com/en-us/azure/app-service-mobile/app-service-mobile-dotnet-how-to-use-client-library#serverflow
 [13]:https://msdn.microsoft.com/library/azure/microsoft.windowsazure.mobileservices.mobileserviceauthenticationprovider(v=azure.10).aspx
