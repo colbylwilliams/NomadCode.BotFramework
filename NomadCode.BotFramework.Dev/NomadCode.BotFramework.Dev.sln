@@ -1,0 +1,55 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomadCode.BotFramework.Dev.Droid", "Droid\NomadCode.BotFramework.Dev.Droid.csproj", "{B7F1C52E-B665-426D-AB78-3FD26A834FF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomadCode.BotFramework.Dev.iOS", "iOS\NomadCode.BotFramework.Dev.iOS.csproj", "{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NomadCode.BotFramework", "..\NomadCode.BotFramework\NomadCode.BotFramework\NomadCode.BotFramework.shproj", "{9BB6E7A1-9998-41B9-A508-8C06FF1D6E6F}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NomadCode.BotFramework.Droid", "..\NomadCode.BotFramework\NomadCode.BotFramework.Droid\NomadCode.BotFramework.Droid.shproj", "{7DC34EB0-DB39-464E-8754-39658CC51E9C}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NomadCode.BotFramework.iOS", "..\NomadCode.BotFramework\NomadCode.BotFramework.iOS\NomadCode.BotFramework.iOS.shproj", "{F2D08DC5-20D9-4A13-8859-D9F7F5215630}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{D0AFAB9B-0F66-4E1C-B592-59C6FB9679A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Release|iPhone.Build.0 = Release|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Release|Any CPU.Build.0 = Release|iPhone
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Release|iPhone.ActiveCfg = Release|iPhone
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Release|iPhone.Build.0 = Release|iPhone
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4}.Debug|iPhone.Build.0 = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F5DACFB1-8DAC-4DE8-90DE-4B727760C2B4} = {D0AFAB9B-0F66-4E1C-B592-59C6FB9679A3}
+		{B7F1C52E-B665-426D-AB78-3FD26A834FF8} = {D0AFAB9B-0F66-4E1C-B592-59C6FB9679A3}
+	EndGlobalSection
+EndGlobal
