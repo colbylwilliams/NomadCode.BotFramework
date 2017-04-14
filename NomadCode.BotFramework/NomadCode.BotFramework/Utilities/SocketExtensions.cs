@@ -6,7 +6,7 @@ namespace NomadCode.BotFramework
     {
 #if __IOS__
 
-        public static void Close (this Square.SocketRocket.WebSocket webSocket, long code, string reason) => webSocket.Close ((Square.SocketRocket.StatusCode)code, reason);
+        public static void Close (this Square.SocketRocket.WebSocket webSocket, long code, string reason) => webSocket?.Close ((Square.SocketRocket.StatusCode)code, reason);
 
 #elif __ANDROID__
 
