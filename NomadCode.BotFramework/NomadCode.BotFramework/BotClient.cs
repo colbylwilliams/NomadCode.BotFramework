@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -47,7 +47,7 @@ namespace NomadCode.BotFramework
         public event NotifyCollectionChangedEventHandler MessagesCollectionChanged;
 
 
-        public List<Message> Messages { get; set; } = new List<Message> ();
+        public List<BotMessage> Messages { get; set; } = new List<BotMessage> ();
 
 
         public bool Initialized => SocketState == SocketStates.Open && HasValidCurrentUser && conversation != null;
@@ -95,7 +95,7 @@ namespace NomadCode.BotFramework
             webSocket = null;
             conversation = null;
             _directLineClient = null;
-            Messages = new List<Message> ();
+            Messages = new List<BotMessage> ();
             MessagesCollectionChanged?.Invoke (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset));
         }
 
@@ -320,7 +320,7 @@ namespace NomadCode.BotFramework
                     {
                         case ActivityTypes.Message:
 
-                            var newMessage = new Message (activity);
+                            var newMessage = new BotMessage (activity);
 
                             var message = Messages.FirstOrDefault (m => m.Equals (newMessage));
 
@@ -385,7 +385,7 @@ namespace NomadCode.BotFramework
                 Timestamp = DateTime.UtcNow
             };
 
-            var message = new Message (activity);
+            var message = new BotMessage (activity);
 
             var posted = postActivityAsync (activity);
 

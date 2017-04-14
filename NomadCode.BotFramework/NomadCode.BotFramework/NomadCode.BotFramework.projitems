@@ -9,7 +9,7 @@
     <Import_RootNamespace>NomadCode.BotFramework</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Message.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BotMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BotClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keychain.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SocketExtensions.cs" />
