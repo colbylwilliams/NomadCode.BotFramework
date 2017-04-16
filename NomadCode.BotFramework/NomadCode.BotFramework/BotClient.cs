@@ -24,6 +24,7 @@ using Foundation;
 using Square.SocketRocket;
 
 using WebSocket = Square.SocketRocket.WebSocket;
+using Newtonsoft.Json.Linq;
 #endif
 
 
@@ -298,7 +299,7 @@ namespace NomadCode.BotFramework
                 return;
             }
 
-            //Log.Info ($"[Socket Message Received] \n{message}");
+            Log.Info ($"[Socket Message Received] \n{message}");
 
             var activitySet = JsonConvert.DeserializeObject<ActivitySet> (message);
 
@@ -306,7 +307,6 @@ namespace NomadCode.BotFramework
         }
 
         #endregion
-
 
         void handleNewActvitySet (ActivitySet activitySet, bool changedEvents = true)
         {

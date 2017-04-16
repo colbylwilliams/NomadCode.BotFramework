@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AttributedStringUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Colors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\AttachmentExtentions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Utilities\" />

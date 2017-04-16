@@ -7,6 +7,7 @@ using Foundation;
 using UIKit;
 
 using Haneke;
+using System.Linq;
 
 namespace NomadCode.BotFramework.iOS
 {
@@ -28,7 +29,7 @@ namespace NomadCode.BotFramework.iOS
 
                 if (message.Head)
                 {
-                    cell.SetMessage (message.LocalTimeStamp, message.Activity?.From?.Name, message.AttributedText);
+                    cell.SetMessage (message.LocalTimeStamp, message.Activity?.From?.Name, message.AttributedText, message.Buttons.Select (b => b.Title).ToArray ());
 
                     cell?.ImageView.SetCacheFormat (getCacheFormat (MessageCell.AvatarImageSize));
 
@@ -62,7 +63,7 @@ namespace NomadCode.BotFramework.iOS
                 }
                 else
                 {
-                    cell.SetMessage (message.AttributedText);
+                    cell.SetMessage (message.AttributedText, message.Buttons.Select (b => b.Title).ToArray ());
                 }
 
                 // Cells must inherit the table view's transform
@@ -181,10 +182,10 @@ namespace NomadCode.BotFramework.iOS
                 if (message.Head) height += 36.5f; // pading(10) + title(21.5) + padding(5) + content(height)
 
                 //if message has buttons
-                if (message.ButtonCount > 0)
+                if (message.Buttons.Count > 0)
                 {
-                    height += (32 * message.ButtonCount);
-                    height += 4 * (message.ButtonCount - 1);
+                    height += (32 * message.Buttons.Count);
+                    height += 4 * (message.Buttons.Count - 1);
                     height += 5;
                 }
 
