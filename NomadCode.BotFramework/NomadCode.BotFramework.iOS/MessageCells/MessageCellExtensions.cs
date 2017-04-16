@@ -29,41 +29,39 @@ namespace NomadCode.BotFramework.iOS
 
                 if (message.Head)
                 {
-                    cell.SetMessage (message.LocalTimeStamp, message.Activity?.From?.Name, message.AttributedText, message.Buttons.Select (b => b.Title).ToArray ());
-
-                    cell?.ImageView.SetCacheFormat (getCacheFormat (MessageCell.AvatarImageSize));
-
-                    if (message.Activity.From.Id == "DigitalAgencies")
-                    {
-                        cell.SetAvatar (indexPath.Row, UIImage.FromBundle ("avatar_microsoft"));
-                    }
-                    else
-                    {
-                        var avatarUrl = string.IsNullOrEmpty (message.Activity?.From?.Id) ? string.Empty : BotClient.Shared.GetAvatarUrl (message.Activity.From.Id);
-
-                        if (string.IsNullOrEmpty (avatarUrl))
-                        {
-                            cell.SetAvatar (indexPath.Row, null);
-                        }
-                        else
-                        {
-                            var placeholder = getPlaceholderImage (MessageCell.AvatarImageSize);
-
-                            using (NSUrl url = new NSUrl (avatarUrl))
-                            {
-                                cell?.ImageView.SetImage (url, placeholder, (img) => cell.SetAvatar (indexPath.Row, img), (err) =>
-                                {
-                                    cell.SetAvatar (indexPath.Row, null);
-
-                                    Log.Debug (err.LocalizedDescription);
-                                });
-                            }
-                        }
-                    }
+                    cell.SetHeader (indexPath, message);
                 }
-                else
+
+                if (message.HasText)
                 {
-                    cell.SetMessage (message.AttributedText, message.Buttons.Select (b => b.Title).ToArray ());
+                    cell.SetMessage (message.AttributedText);
+                }
+
+                if (message.HasAtachments)
+                {
+                    foreach (var attachment in message.Attachments)
+                    {
+                        if (attachment.Content.HasTitle)
+                        {
+                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                        }
+
+                        if (attachment.Content.HasSubtitle)
+                        {
+                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                        }
+
+                        if (attachment.Content.HasImages)
+                        {
+                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                        }
+
+                        // buttons
+                        if (attachment.Content.HasButtons)
+                        {
+                            cell.SetButtons (attachment.Content.Buttons.Select (b => (b.Title, b.Value.ToString ())).ToArray ());
+                        }
+                    }
                 }
 
                 // Cells must inherit the table view's transform
@@ -76,6 +74,96 @@ namespace NomadCode.BotFramework.iOS
             }
 
             return null;
+        }
+
+
+        static void SetHeroImage (this MessageCell cell, NSIndexPath indexPath, string imageUrl)
+        {
+            cell.HeroImageView.SetCacheFormat (getCacheFormat (MessageCell.HeroImageSize));
+
+            cell.AddHeroImage ();
+
+            if (string.IsNullOrEmpty (imageUrl))
+            {
+                cell.SetHeroImage (indexPath.Row, null);
+            }
+            else
+            {
+                var placeholder = getPlaceholderImage (MessageCell.HeroImageSize);
+
+                using (NSUrl url = new NSUrl (imageUrl))
+                {
+                    cell?.HeroImageView.SetImage (url, placeholder, (img) => cell.SetHeroImage (indexPath.Row, img), (err) =>
+                    {
+                        cell.SetHeroImage (indexPath.Row, null);
+
+                        Log.Debug (err.LocalizedDescription);
+                    });
+                }
+            }
+        }
+
+
+        static void SetThumbnailImage (this MessageCell cell, NSIndexPath indexPath, string imageUrl)
+        {
+            cell.ThumbnailImageView.SetCacheFormat (getCacheFormat (MessageCell.ThumbnailImageSize));
+
+            cell.AddThumbnailImage ();
+
+            if (string.IsNullOrEmpty (imageUrl))
+            {
+                cell.SetThumbnailImage (indexPath.Row, null);
+            }
+            else
+            {
+                var placeholder = getPlaceholderImage (MessageCell.ThumbnailImageSize);
+
+                using (NSUrl url = new NSUrl (imageUrl))
+                {
+                    cell?.ThumbnailImageView.SetImage (url, placeholder, (img) => cell.SetThumbnailImage (indexPath.Row, img), (err) =>
+                    {
+                        cell.SetThumbnailImage (indexPath.Row, null);
+
+                        Log.Debug (err.LocalizedDescription);
+                    });
+                }
+            }
+        }
+
+
+        static void SetHeader (this MessageCell cell, NSIndexPath indexPath, BotMessage message)
+        {
+            cell.SetHeader (message.LocalTimeStamp, message.Activity?.From?.Name);
+
+            cell.ImageView.SetCacheFormat (getCacheFormat (MessageCell.AvatarImageSize));
+
+            if (message.Activity.From.Id == "DigitalAgencies")
+            {
+                cell.SetAvatar (indexPath.Row, UIImage.FromBundle ("avatar_microsoft"));
+            }
+            else
+            {
+                var avatarUrl = string.IsNullOrEmpty (message.Activity?.From?.Id) ? string.Empty : BotClient.Shared.GetAvatarUrl (message.Activity.From.Id);
+
+                if (string.IsNullOrEmpty (avatarUrl))
+                {
+                    cell.SetAvatar (indexPath.Row, null);
+                }
+                else
+                {
+                    var placeholder = getPlaceholderImage (MessageCell.AvatarImageSize);
+
+                    using (NSUrl url = new NSUrl (avatarUrl))
+                    {
+                        cell?.ImageView.SetImage (url, placeholder, (img) => cell.SetAvatar (indexPath.Row, img), (err) =>
+                        {
+                            cell.SetAvatar (indexPath.Row, null);
+
+                            Log.Debug (err.LocalizedDescription);
+                        });
+                    }
+                }
+            }
         }
 
 
@@ -151,13 +239,12 @@ namespace NomadCode.BotFramework.iOS
 
         public static nfloat GetMessageHeight (this List<BotMessage> messages, UITableView tableView, NSIndexPath indexPath)
         {
-            var width = tableView.Frame.Width;
-
             var row = indexPath.Row;
+
+            //Log.Debug ($"table: {tableView.Frame.Width - 49}, contentWidth: {MessageCell.ContentWidth}");
 
             if (messages?.Count > 0 && messages.Count > row)
             {
-
                 var message = messages [row];
 
                 nfloat height = message.CellHeight;
@@ -169,11 +256,7 @@ namespace NomadCode.BotFramework.iOS
 
                 message.Head = row == messages.Count - 1 || (row + 1 < messages.Count) && (messages [row + 1].Activity.From.Name != message.Activity.From.Name);
 
-                width -= 49;
-
-                if (string.IsNullOrEmpty (message?.Activity.Text)) return 0;
-
-                var bodyBounds = message.AttributedText.GetBoundingRect (new CGSize (width, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+                var bodyBounds = message.HasText ? message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
 
                 height = bodyBounds.Height + 5;// + 8.5f; // empty stackView = 3.5f + bottom padding = 5
 
@@ -181,12 +264,34 @@ namespace NomadCode.BotFramework.iOS
 
                 if (message.Head) height += 36.5f; // pading(10) + title(21.5) + padding(5) + content(height)
 
-                //if message has buttons
-                if (message.Buttons.Count > 0)
+
+                if (message.HasAtachments)
                 {
-                    height += (32 * message.Buttons.Count);
-                    height += 4 * (message.Buttons.Count - 1);
-                    height += 5;
+                    foreach (var attachment in message.Attachments)
+                    {
+                        if (attachment.Content.HasTitle)
+                        {
+                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                        }
+
+                        if (attachment.Content.HasSubtitle)
+                        {
+                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                        }
+
+                        if (attachment.Content.HasImages)
+                        {
+                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                        }
+
+                        // buttons
+                        if (attachment.Content.HasButtons)
+                        {
+                            height += (32 * attachment.Content.Buttons.Count);
+                            height += 4 * (attachment.Content.Buttons.Count - 1);
+                            height += 5;
+                        }
+                    }
                 }
 
                 message.CellHeight = height;

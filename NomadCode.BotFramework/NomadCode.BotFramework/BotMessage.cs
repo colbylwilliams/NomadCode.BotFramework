@@ -32,22 +32,24 @@ namespace NomadCode.BotFramework
 
         public Activity Activity { get; private set; }
 
+        public bool HasText => !string.IsNullOrEmpty (Activity?.Text);
+
         public bool HasAtachments => Activity?.Attachments?.Count > 0;
 
-        bool? _hasCards;
-        public bool HasCards => _hasCards ?? (_hasCards = Attachments.Any (a => a.CardType != CardTypes.Unknown)).Value;
+        //bool? _hasCards;
+        //public bool HasCards => _hasCards ?? (_hasCards = Attachments.Any (a => a.CardType != CardTypes.Unknown)).Value;
 
 
 
         //public int ButtonCount => Buttons.Count;
 
-        List<CardAction> _buttons;
-        public List<CardAction> Buttons => _buttons ?? (_buttons = HasCards ? Attachments.Where (a => a.CardType != CardTypes.Unknown).SelectMany (c => c.Attachment.GetButtons ()).ToList () : new List<CardAction> ());
+        //List<CardAction> _buttons;
+        //public List<CardAction> Buttons => _buttons ?? (_buttons = HasCards ? Attachments.Where (a => a.CardType != CardTypes.Unknown).SelectMany (c => c.Attachment.GetButtons ()).ToList () : new List<CardAction> ());
 
 
-        List<(CardTypes CardType, Attachment Attachment)> _attachments;
+        List<(Attachment Attachment, AttachmentContent Content)> _attachments;
 
-        public List<(CardTypes CardType, Attachment Attachment)> Attachments => _attachments ?? (_attachments = Activity?.Attachments?.Select (a => (a.GetCardType (), a)).ToList () ?? new List<(CardTypes CardType, Attachment Attachment)> ());
+        public List<(Attachment Attachment, AttachmentContent Content)> Attachments => _attachments ?? (_attachments = Activity?.Attachments?.Select (a => (a, a.GetContent ())).ToList () ?? new List<(Attachment Attachment, AttachmentContent Content)> ());
 
 
         //public int ButtonCount

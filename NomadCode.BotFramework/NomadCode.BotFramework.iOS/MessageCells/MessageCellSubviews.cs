@@ -9,7 +9,7 @@ namespace NomadCode.BotFramework.iOS
 {
     public static class MessageCellSubviews
     {
-        public static TTTAttributedLabel GetBodyLabel(NSObject weakDelegate)
+        public static TTTAttributedLabel GetBodyLabel (NSObject weakDelegate)
         {
             var bodyLabel = new TTTAttributedLabel
             {
@@ -24,13 +24,13 @@ namespace NomadCode.BotFramework.iOS
                 WeakDelegate = weakDelegate
             };
 
-            bodyLabel.SetContentCompressionResistancePriority(250, UILayoutConstraintAxis.Vertical);
+            bodyLabel.SetContentCompressionResistancePriority (250, UILayoutConstraintAxis.Vertical);
 
             return bodyLabel;
         }
 
 
-        public static UILabel GetTitleLabel()
+        public static UILabel GetTitleLabel ()
         {
             var titleLabel = new UILabel
             {
@@ -42,13 +42,13 @@ namespace NomadCode.BotFramework.iOS
                 Font = AttributedStringUtilities.HeaderFont,
             };
 
-            titleLabel.SetContentCompressionResistancePriority(300, UILayoutConstraintAxis.Vertical);
+            titleLabel.SetContentCompressionResistancePriority (300, UILayoutConstraintAxis.Vertical);
 
             return titleLabel;
         }
 
 
-        public static UILabel GetTimestampLabel()
+        public static UILabel GetTimestampLabel ()
         {
             var timestampLabel = new UILabel
             {
@@ -64,13 +64,13 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public static UIImageView GetAvatarView()
+        public static UIImageView GetAvatarView ()
         {
             var avatarView = new UIImageView
             {
                 TranslatesAutoresizingMaskIntoConstraints = false,
                 UserInteractionEnabled = false,
-                BackgroundColor = UIColor.FromWhiteAlpha(0.9f, 1.0f),
+                BackgroundColor = UIColor.FromWhiteAlpha (0.9f, 1.0f),
             };
 
             avatarView.Layer.CornerRadius = 4;
@@ -80,13 +80,13 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public static UIImageView GetHeroImageView()
+        public static UIImageView GetHeroImageView ()
         {
             var heroImageView = new UIImageView
             {
                 TranslatesAutoresizingMaskIntoConstraints = false,
                 UserInteractionEnabled = false,
-                BackgroundColor = UIColor.FromWhiteAlpha(0.9f, 1.0f),
+                BackgroundColor = UIColor.FromWhiteAlpha (0.9f, 1.0f),
             };
 
             heroImageView.Layer.CornerRadius = 4;
@@ -96,13 +96,13 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public static UIImageView GetThumbnailImageView()
+        public static UIImageView GetThumbnailImageView ()
         {
             var thumbnailImageView = new UIImageView
             {
                 TranslatesAutoresizingMaskIntoConstraints = false,
                 UserInteractionEnabled = false,
-                BackgroundColor = UIColor.FromWhiteAlpha(0.9f, 1.0f),
+                BackgroundColor = UIColor.FromWhiteAlpha (0.9f, 1.0f),
             };
 
             thumbnailImageView.Layer.CornerRadius = 4;
@@ -112,17 +112,17 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public static UIButton GetButton(string title)
+        public static UIButton GetButton (string title)
         {
-            var button = new UIButton(UIButtonType.System)
+            var button = new UIButton (UIButtonType.System)
             {
                 TranslatesAutoresizingMaskIntoConstraints = false
             };
 
-            button.SetTitle(title, UIControlState.Normal);
-            button.SetTitleColor(UIColor.DarkGray, UIControlState.Normal);
+            button.SetTitle (title, UIControlState.Normal);
+            button.SetTitleColor (UIColor.DarkGray, UIControlState.Normal);
 
-            button.TitleLabel.Font = UIFont.BoldSystemFontOfSize(AttributedStringUtilities.MessageFontSize);
+            button.TitleLabel.Font = UIFont.BoldSystemFontOfSize (AttributedStringUtilities.MessageFontSize);
 
             button.Layer.BorderWidth = 1;
             button.Layer.BorderColor = UIColor.LightGray.CGColor;
@@ -132,7 +132,7 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public static UIStackView GetButtonStackView()
+        public static UIStackView GetContentStackView ()
         {
             var stackView = new UIStackView
             {
@@ -143,7 +143,7 @@ namespace NomadCode.BotFramework.iOS
                 Distribution = UIStackViewDistribution.FillEqually
             };
 
-            stackView.SetContentCompressionResistancePriority(200, UILayoutConstraintAxis.Vertical);
+            stackView.SetContentCompressionResistancePriority (200, UILayoutConstraintAxis.Vertical);
 
             return stackView;
         }

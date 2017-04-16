@@ -9,14 +9,26 @@ namespace NomadCode.BotFramework.iOS
 {
     public class MessageCell : UITableViewCell, ITTTAttributedLabelDelegate
     {
-        public static readonly nfloat AvatarHeight = 24;
         public static readonly nfloat AutoCompleteHeight = 50;
+
+        public static readonly nfloat ContentWidth = UIScreen.MainScreen.Bounds.Width - 49;
+
+        public static readonly nfloat AvatarHeight = 24;
         public static readonly nfloat AvatarImageHeight = AvatarHeight * UIScreen.MainScreen.Scale;
         public static readonly (nfloat, nfloat) AvatarImageSize = (AvatarImageHeight, AvatarImageHeight);
 
+        public static readonly nfloat HeroHeight = ContentWidth;
+        public static readonly nfloat HeroImageHeight = HeroHeight * UIScreen.MainScreen.Scale;
+        public static readonly (nfloat, nfloat) HeroImageSize = (HeroImageHeight, HeroImageHeight);
+
+        public static readonly nfloat ThumbnailHeight = ContentWidth / 3;
+        public static readonly nfloat ThumbnailImageHeight = ThumbnailHeight * UIScreen.MainScreen.Scale;
+        public static readonly (nfloat, nfloat) ThumbnailImageSize = (ThumbnailImageHeight, ThumbnailImageHeight);
+
+
         #region Views
 
-        UIStackView _buttonStackView;
+        UIStackView _contentStackView;
 
         TTTAttributedLabel _bodyLabel;
 
@@ -33,7 +45,7 @@ namespace NomadCode.BotFramework.iOS
 
         public override UIImageView ImageView => AvatarView;
 
-        public UIStackView ButtonStackView => _buttonStackView ?? (_buttonStackView = MessageCellSubviews.GetButtonStackView ());
+        public UIStackView ContentStackView => _contentStackView ?? (_contentStackView = MessageCellSubviews.GetContentStackView ());
 
         public TTTAttributedLabel BodyLabel => _bodyLabel ?? (_bodyLabel = MessageCellSubviews.GetBodyLabel (this));
 
@@ -93,11 +105,11 @@ namespace NomadCode.BotFramework.iOS
                 TimestampLabel.Text = string.Empty;
             }
 
-            var views = ButtonStackView.ArrangedSubviews;
+            var views = ContentStackView.ArrangedSubviews;
 
             foreach (var view in views)
             {
-                ButtonStackView.RemoveArrangedSubview (view);
+                ContentStackView.RemoveArrangedSubview (view);
                 view.RemoveFromSuperview ();
                 //TODO: Cleanup actions and view
             }
@@ -106,37 +118,34 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public void SetMessage (NSAttributedString message, params string [] buttonTitles)
+        public void SetHeader (DateTime? timestamp, string username)
         {
-            foreach (var title in buttonTitles)
-            {
-                ButtonStackView.AddArrangedSubview (MessageCellSubviews.GetButton (title));
-            }
-
-            BodyLabel.SetText (message);
-        }
-
-
-        public void SetMessage (DateTime? timestamp, string username, NSAttributedString attrMessage, params string [] buttonTitles)
-        {
-            //loadingTicks = DateTime.UtcNow.Ticks;
-
             TitleLabel.Text = username;
             TimestampLabel.Text = timestamp?.ToShortTimeString ();
-
-            SetMessage (attrMessage, buttonTitles);
-
-            //return loadingTicks;
         }
 
+        public void SetAvatar (int key, UIImage avatar) => AvatarView.Image = key == Tag ? avatar : null;
 
-        public bool SetAvatar (int key, UIImage avatar)
+
+        public void SetMessage (NSAttributedString message) => BodyLabel.SetText (message);
+
+
+        public void AddHeroImage () => ContentStackView.AddArrangedSubview (HeroImageView);
+
+        public void SetHeroImage (int key, UIImage image) => HeroImageView.Image = key == Tag ? image : null;
+
+
+        public void AddThumbnailImage () => ContentStackView.AddArrangedSubview (ThumbnailImageView);
+
+        public void SetThumbnailImage (int key, UIImage image) => ThumbnailImageView.Image = key == Tag ? image : null;
+
+
+        public void SetButtons (params (string Title, string Value) [] buttons)
         {
-            var same = key == Tag;
-
-            AvatarView.Image = same ? avatar : null;
-
-            return same;
+            foreach (var button in buttons)
+            {
+                ContentStackView.AddArrangedSubview (MessageCellSubviews.GetButton (button.Title));
+            }
         }
 
 
@@ -178,9 +187,9 @@ namespace NomadCode.BotFramework.iOS
             }
 
 
-            ContentView.AddSubview (ButtonStackView);
+            ContentView.AddSubview (ContentStackView);
 
-            constraintViews.Add (new NSString (@"stackView"), ButtonStackView);
+            constraintViews.Add (new NSString (@"stackView"), ContentStackView);
 
 
             configureConstraintsForCellContent ();

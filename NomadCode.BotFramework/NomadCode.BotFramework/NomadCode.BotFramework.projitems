@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Colors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AttachmentExtentions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\AttachmentContent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Utilities\" />

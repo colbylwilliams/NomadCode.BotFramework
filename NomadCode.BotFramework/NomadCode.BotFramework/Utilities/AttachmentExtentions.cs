@@ -35,6 +35,22 @@ namespace NomadCode.BotFramework
 
     public static class AttachmentExtentions
     {
+
+        public static AttachmentContent GetContent (this Attachment attachment)
+        {
+            if (attachment.Content is JObject content)
+            {
+                var card = content.ToObject<AttachmentContent> ();
+
+                if (card != null)
+                {
+                    return card;
+                }
+            }
+
+            return new AttachmentContent ();
+        }
+
         public static bool IsCard (this Attachment attachment) => attachment.GetCardType () != CardTypes.Unknown;
 
         public static CardTypes GetCardType (this Attachment attachment)
@@ -78,15 +94,14 @@ namespace NomadCode.BotFramework
         }
 
 
-        public static int GetButtonCount (this Attachment attachment)
-        {
-            if (attachment.IsCard () && attachment.Content is JObject content)
-            {
-                return content.GetValue ("buttons").Values<CardAction> ().Count ();
-            }
-
-            return 0;
-        }
+        //public static int GetButtonCount (this Attachment attachment)
+        //{
+        //    if (attachment.IsCard () && attachment.Content is JObject content)
+        //    {
+        //        return content.GetValue ("buttons").Values<CardAction> ().Count ();
+        //    }
+        //    return 0;
+        //}
 
 
         static T asCard<T> (this Attachment attachment, string contentType)
