@@ -63,17 +63,19 @@ namespace NomadCode.BotFramework
         static readonly string [] linkSplit = { "](" };
 
 
-        public static nfloat MessageFontSize = 16;
         public static nfloat HeaderFontSize = 18;
+        public static nfloat MessageFontSize = 16;
         public static nfloat TimestampFontSize = 11;
 
         public static readonly UIFont HeaderFont = UIFont.BoldSystemFontOfSize (HeaderFontSize);
         public static readonly UIFont MessageFont = UIFont.SystemFontOfSize (MessageFontSize);
         public static readonly UIFont TimestampFont = UIFont.SystemFontOfSize (TimestampFontSize);
+        public static readonly UIFont AttachmentTitleFont = UIFont.BoldSystemFontOfSize (MessageFontSize);
+        public static readonly UIFont AttachmentSubtitleFont = UIFont.SystemFontOfSize (MessageFontSize - 1);
 
         static UIFont messageFontBold = UIFont.BoldSystemFontOfSize (MessageFontSize);
         static UIFont messageFontItalic = UIFont.ItalicSystemFontOfSize (MessageFontSize);
-        static UIFont messageFontPre = UIFont.FromName ("Menlo-Regular", 15);
+        static UIFont messageFontPre = UIFont.FromName ("Menlo-Regular", MessageFontSize - 1);
 
 
         static readonly NSMutableParagraphStyle messageParagraphStyle = new NSMutableParagraphStyle
@@ -90,6 +92,26 @@ namespace NomadCode.BotFramework
             HeadIndent = 15
         };
 
+
+        public static NSMutableAttributedString GetAttributedString (this string text, UIStringAttributes attributes)
+        {
+            var attrString = new NSMutableAttributedString (text);
+
+            attrString.AddAttributes (attributes, new NSRange (0, text.Length));
+
+            return attrString;
+        }
+
+
+        public static NSMutableAttributedString GetAttachmentTitleAttributedString (this string title)
+        {
+            return GetAttributedString (title, AttachmentTitleStringAttributes);
+        }
+
+        public static NSMutableAttributedString GetAttachmentSubtitleAttributedString (this string title)
+        {
+            return GetAttributedString (title, AttachmentSubtitleStringAttributes);
+        }
 
 
         public static NSMutableAttributedString GetMessageAttributedString (this string message)
@@ -281,6 +303,21 @@ namespace NomadCode.BotFramework
 
 
         #region UIStringAttributes
+
+        public static UIStringAttributes AttachmentTitleStringAttributes = new UIStringAttributes
+        {
+            Font = AttachmentTitleFont,
+            ParagraphStyle = messageParagraphStyle,
+            ForegroundColor = Colors.MessageColor
+        };
+
+        public static UIStringAttributes AttachmentSubtitleStringAttributes = new UIStringAttributes
+        {
+            Font = AttachmentSubtitleFont,
+            ParagraphStyle = messageParagraphStyle,
+            ForegroundColor = UIColor.DarkGray
+        };
+
 
         public static UIStringAttributes MessageStringAttributes = new UIStringAttributes
         {

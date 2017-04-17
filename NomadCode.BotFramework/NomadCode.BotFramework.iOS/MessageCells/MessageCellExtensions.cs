@@ -41,19 +41,34 @@ namespace NomadCode.BotFramework.iOS
                 {
                     foreach (var attachment in message.Attachments)
                     {
+                        // title
                         if (attachment.Content.HasTitle)
                         {
-                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                            cell.AddAttachmentTitle (attachment.Content.AttributedTitle);
                         }
 
+                        // subtitle
                         if (attachment.Content.HasSubtitle)
                         {
-                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                            cell.AddAttachmentSubtitle (attachment.Content.AttributedSubtitle);
                         }
 
+                        // text
+                        if (attachment.Content.HasText)
+                        {
+                            cell.AddAttachmentText (attachment.Content.AttributedText);
+                        }
+
+                        // images
                         if (attachment.Content.HasImages)
                         {
-                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                            foreach (var image in attachment.Content.Images)
+                            {
+                                // my bot is currently responding with bs image urls, so fill in some super sweet IronMan images for now
+                                var imageUrl = image.Url.Contains ("<ImageUrl1>") ? @"https://s-media-cache-ak0.pinimg.com/originals/5b/26/ff/5b26ff29982e6bd0aa05870ad84e9e7a.png" : image.Url.Contains ("<ImageUrl2>") ? @"https://s-media-cache-ak0.pinimg.com/originals/3b/b1/68/3bb168b56145920fdba25c4678b97bbb.png" : image.Url;
+
+                                cell.AddHeroImage (indexPath, imageUrl);
+                            }
                         }
 
                         // buttons
@@ -68,8 +83,6 @@ namespace NomadCode.BotFramework.iOS
                 // This is very important, since the main table view may be inverted
                 cell.Transform = tableView.Transform;
 
-                //Log.Debug($"{cell.BodyLabel.Bounds.Width}");
-
                 return cell;
             }
 
@@ -77,25 +90,25 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        static void SetHeroImage (this MessageCell cell, NSIndexPath indexPath, string imageUrl)
+        static void AddHeroImage (this MessageCell cell, NSIndexPath indexPath, string imageUrl)
         {
-            cell.HeroImageView.SetCacheFormat (getCacheFormat (MessageCell.HeroImageSize));
+            var index = cell.AddHeroImage ();
 
-            cell.AddHeroImage ();
+            cell.HeroImageViews [index].SetCacheFormat (getCacheFormat (MessageCell.HeroScaledImageSize));
 
             if (string.IsNullOrEmpty (imageUrl))
             {
-                cell.SetHeroImage (indexPath.Row, null);
+                cell.SetHeroImage (indexPath.Row, index, null);
             }
             else
             {
-                var placeholder = getPlaceholderImage (MessageCell.HeroImageSize);
+                var placeholder = getPlaceholderImage (MessageCell.HeroScaledImageSize);
 
                 using (NSUrl url = new NSUrl (imageUrl))
                 {
-                    cell?.HeroImageView.SetImage (url, placeholder, (img) => cell.SetHeroImage (indexPath.Row, img), (err) =>
+                    cell?.HeroImageViews [index].SetImage (url, placeholder, (img) => cell.SetHeroImage (indexPath.Row, index, img), (err) =>
                     {
-                        cell.SetHeroImage (indexPath.Row, null);
+                        cell.SetHeroImage (indexPath.Row, index, null);
 
                         Log.Debug (err.LocalizedDescription);
                     });
@@ -237,7 +250,7 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
-        public static nfloat GetMessageHeight (this List<BotMessage> messages, UITableView tableView, NSIndexPath indexPath)
+        public static nfloat GetMessageHeight (this List<BotMessage> messages, NSIndexPath indexPath)
         {
             var row = indexPath.Row;
 
@@ -258,7 +271,7 @@ namespace NomadCode.BotFramework.iOS
 
                 var bodyBounds = message.HasText ? message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
 
-                height = bodyBounds.Height + 5;// + 8.5f; // empty stackView = 3.5f + bottom padding = 5
+                height = bodyBounds.Height + MessageCell.StackViewPadding;// + 8.5f; // empty stackView = 3.5f + bottom padding = 5
 
                 //Log.Debug($"{width}");
 
@@ -269,19 +282,34 @@ namespace NomadCode.BotFramework.iOS
                 {
                     foreach (var attachment in message.Attachments)
                     {
+                        // title
                         if (attachment.Content.HasTitle)
                         {
-                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                            var attachmentTitleBounds = attachment.Content.AttributedTitle.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+                            height += attachmentTitleBounds.Height + MessageCell.StackViewPadding;
                         }
 
+                        // subtitle
                         if (attachment.Content.HasSubtitle)
                         {
-                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                            var attachmentSubtitleBounds = attachment.Content.AttributedSubtitle.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+                            height += attachmentSubtitleBounds.Height + MessageCell.StackViewPadding;
                         }
 
+                        // text
+                        if (attachment.Content.HasText)
+                        {
+                            var attachmentTextBounds = attachment.Content.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+                            height += attachmentTextBounds.Height + MessageCell.StackViewPadding;
+                        }
+
+                        // images
                         if (attachment.Content.HasImages)
                         {
-                            //var attachmentTitleBounds = message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
+                            foreach (var image in attachment.Content.Images)
+                            {
+                                height += MessageCell.HeroImageSize.Height + MessageCell.StackViewPadding;
+                            }
                         }
 
                         // buttons
@@ -289,7 +317,7 @@ namespace NomadCode.BotFramework.iOS
                         {
                             height += (32 * attachment.Content.Buttons.Count);
                             height += 4 * (attachment.Content.Buttons.Count - 1);
-                            height += 5;
+                            height += MessageCell.StackViewPadding;
                         }
                     }
                 }

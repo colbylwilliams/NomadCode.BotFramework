@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Foundation;
 using Microsoft.Bot.Connector.DirectLine;
 using Newtonsoft.Json;
 
@@ -8,6 +9,27 @@ namespace NomadCode.BotFramework
     // generic class to deserialize attachment content into
     public class AttachmentContent
     {
+#if __IOS__
+        NSAttributedString _attributedText;
+        public NSAttributedString AttributedText => _attributedText ?? (_attributedText = Text?.GetMessageAttributedString ());
+
+        NSAttributedString _attributedTitle;
+        public NSAttributedString AttributedTitle => _attributedTitle ?? (_attributedTitle = Title?.GetAttachmentTitleAttributedString ());
+
+        NSAttributedString _attributedSubtitle;
+        public NSAttributedString AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle?.GetAttachmentSubtitleAttributedString ());
+#elif __ANDROID__
+        string _attributedText;
+        public string AttributedText => _attributedText ?? (_attributedText = Text/*?.GetMessageAttributedString ()*/);
+
+        string _attributedTitle;
+        public string AttributedTitle => _attributedTitle ?? (_attributedTitle = Title/*?.GetMessageAttributedString ()*/);
+
+        string _attributedSubtitle;
+        public string AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle/*?.GetMessageAttributedString ()*/);
+#endif
+
+
         // maybe set content type to know if the images are hero or thumbnail?
 
         [JsonProperty (PropertyName = "title")]

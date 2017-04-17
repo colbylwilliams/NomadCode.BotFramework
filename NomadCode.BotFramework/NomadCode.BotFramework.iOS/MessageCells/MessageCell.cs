@@ -4,26 +4,30 @@ using UIKit;
 using Foundation;
 
 using Xamarin.TTTAttributedLabel;
+using System.Collections.Generic;
 
 namespace NomadCode.BotFramework.iOS
 {
     public class MessageCell : UITableViewCell, ITTTAttributedLabelDelegate
     {
+        public static readonly nfloat StackViewPadding = 5;
+
         public static readonly nfloat AutoCompleteHeight = 50;
 
         public static readonly nfloat ContentWidth = UIScreen.MainScreen.Bounds.Width - 49;
 
-        public static readonly nfloat AvatarHeight = 24;
-        public static readonly nfloat AvatarImageHeight = AvatarHeight * UIScreen.MainScreen.Scale;
-        public static readonly (nfloat, nfloat) AvatarImageSize = (AvatarImageHeight, AvatarImageHeight);
 
-        public static readonly nfloat HeroHeight = ContentWidth;
-        public static readonly nfloat HeroImageHeight = HeroHeight * UIScreen.MainScreen.Scale;
-        public static readonly (nfloat, nfloat) HeroImageSize = (HeroImageHeight, HeroImageHeight);
+        public static readonly (nfloat Width, nfloat Height) AvatarRatio = (1, 1);
+        public static readonly (nfloat Width, nfloat Height) AvatarImageSize = (24, (AvatarRatio.Height / AvatarRatio.Width) * 24);
+        public static readonly (nfloat Width, nfloat Height) AvatarScaledImageSize = (AvatarImageSize.Width * UIScreen.MainScreen.Scale, AvatarImageSize.Height * UIScreen.MainScreen.Scale);
 
-        public static readonly nfloat ThumbnailHeight = ContentWidth / 3;
-        public static readonly nfloat ThumbnailImageHeight = ThumbnailHeight * UIScreen.MainScreen.Scale;
-        public static readonly (nfloat, nfloat) ThumbnailImageSize = (ThumbnailImageHeight, ThumbnailImageHeight);
+        public static readonly (nfloat Width, nfloat Height) HeroRatio = (5, 4);
+        public static readonly (nfloat Width, nfloat Height) HeroImageSize = (ContentWidth, (HeroRatio.Height / HeroRatio.Width) * ContentWidth);
+        public static readonly (nfloat Width, nfloat Height) HeroScaledImageSize = (HeroImageSize.Width * UIScreen.MainScreen.Scale, HeroImageSize.Height * UIScreen.MainScreen.Scale);
+
+        public static readonly (nfloat Width, nfloat Height) ThumbnailRatio = (5, 4);
+        public static readonly (nfloat Width, nfloat Height) ThumbnailImageSize = (ContentWidth, (ThumbnailRatio.Height / ThumbnailRatio.Width) * ContentWidth);
+        public static readonly (nfloat Width, nfloat Height) ThumbnailScaledImageSize = (ThumbnailImageSize.Width * UIScreen.MainScreen.Scale, ThumbnailImageSize.Height * UIScreen.MainScreen.Scale);
 
 
         #region Views
@@ -34,12 +38,12 @@ namespace NomadCode.BotFramework.iOS
 
         UILabel _titleLabel, _timestampLabel;
 
-        UIImageView _avatarView, _heroImageView, _thumbnailImageView;
+        UIImageView _avatarView, _thumbnailImageView;
 
         NSMutableDictionary constraintViews = new NSMutableDictionary ();
 
         NSMutableDictionary constraintMetrics = NSMutableDictionary.FromObjectsAndKeys (
-            new NSNumber [] { NSNumber.FromNFloat (AvatarHeight), NSNumber.FromNFloat (13), NSNumber.FromNFloat (10), NSNumber.FromNFloat (5), NSNumber.FromNFloat (AvatarHeight + 15) },
+            new NSNumber [] { NSNumber.FromNFloat (AvatarImageSize.Height), NSNumber.FromNFloat (13), NSNumber.FromNFloat (10), NSNumber.FromNFloat (5), NSNumber.FromNFloat (AvatarImageSize.Height + 15) },
             new NSString [] { new NSString (@"avatarSize"), new NSString (@"padding"), new NSString (@"right"), new NSString (@"left"), new NSString (@"leftInset") }
         );
 
@@ -54,8 +58,6 @@ namespace NomadCode.BotFramework.iOS
         public UILabel TimestampLabel => _timestampLabel ?? (_timestampLabel = MessageCellSubviews.GetTimestampLabel ());
 
         public UIImageView AvatarView => _avatarView ?? (_avatarView = MessageCellSubviews.GetAvatarView ());
-
-        public UIImageView HeroImageView => _heroImageView ?? (_heroImageView = MessageCellSubviews.GetHeroImageView ());
 
         public UIImageView ThumbnailImageView => _thumbnailImageView ?? (_thumbnailImageView = MessageCellSubviews.GetThumbnailImageView ());
 
@@ -91,7 +93,7 @@ namespace NomadCode.BotFramework.iOS
             configureViewsForCellType ();
         }
 
-
+        public List<UIImageView> HeroImageViews = new List<UIImageView> ();
         public override void PrepareForReuse ()
         {
             base.PrepareForReuse ();
@@ -114,6 +116,11 @@ namespace NomadCode.BotFramework.iOS
                 //TODO: Cleanup actions and view
             }
 
+            if (HeroImageViews?.Count > 0)
+            {
+                HeroImageViews = new List<UIImageView> ();
+            }
+
             SelectionStyle = UITableViewCellSelectionStyle.None;
         }
 
@@ -130,9 +137,47 @@ namespace NomadCode.BotFramework.iOS
         public void SetMessage (NSAttributedString message) => BodyLabel.SetText (message);
 
 
-        public void AddHeroImage () => ContentStackView.AddArrangedSubview (HeroImageView);
+        public void AddAttachmentTitle (NSAttributedString text)
+        {
+            var label = MessageCellSubviews.GetAttachmentTitleLabel (this);
+            label.SetText (text);
+            ContentStackView.AddArrangedSubview (label);
+        }
 
-        public void SetHeroImage (int key, UIImage image) => HeroImageView.Image = key == Tag ? image : null;
+
+        public void AddAttachmentSubtitle (NSAttributedString text)
+        {
+            var label = MessageCellSubviews.GetAttachmentSubtitleLabel (this);
+            label.SetText (text);
+            ContentStackView.AddArrangedSubview (label);
+        }
+
+
+        public void AddAttachmentText (NSAttributedString text)
+        {
+            var label = MessageCellSubviews.GetBodyLabel (this);
+            label.SetText (text);
+            ContentStackView.AddArrangedSubview (label);
+        }
+
+
+        public int AddHeroImage ()
+        {
+            var imageCount = HeroImageViews.Count;
+
+            var image = MessageCellSubviews.GetHeroImageView ();
+
+            image.AddConstraint (NSLayoutConstraint.Create (image, NSLayoutAttribute.Height, NSLayoutRelation.Equal, 0, HeroImageSize.Height));
+            image.AddConstraint (NSLayoutConstraint.Create (image, NSLayoutAttribute.Width, NSLayoutRelation.Equal, 0, HeroImageSize.Width));
+
+            ContentStackView.AddArrangedSubview (image);
+
+            HeroImageViews.Add (image);
+
+            return imageCount;
+        }
+
+        public void SetHeroImage (int key, int index, UIImage image) => HeroImageViews [index].Image = key == Tag ? image : null;
 
 
         public void AddThumbnailImage () => ContentStackView.AddArrangedSubview (ThumbnailImageView);

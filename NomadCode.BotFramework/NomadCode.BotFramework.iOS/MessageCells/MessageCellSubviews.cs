@@ -48,6 +48,48 @@ namespace NomadCode.BotFramework.iOS
         }
 
 
+        public static TTTAttributedLabel GetAttachmentTitleLabel (NSObject weakDelegate)
+        {
+            var titleLabel = new TTTAttributedLabel
+            {
+                TranslatesAutoresizingMaskIntoConstraints = false,
+                BackgroundColor = UIColor.White,
+                UserInteractionEnabled = true,
+                Lines = 0,
+                TextColor = Colors.MessageColor,
+                Font = AttributedStringUtilities.AttachmentTitleFont,
+                LinkAttributes = AttributedStringUtilities.LinkStringAttributes.Dictionary,
+                EnabledTextCheckingTypes = NSTextCheckingType.Link,
+                WeakDelegate = weakDelegate
+            };
+
+            titleLabel.SetContentCompressionResistancePriority (250, UILayoutConstraintAxis.Vertical);
+
+            return titleLabel;
+        }
+
+
+        public static TTTAttributedLabel GetAttachmentSubtitleLabel (NSObject weakDelegate)
+        {
+            var subtitleLabel = new TTTAttributedLabel
+            {
+                TranslatesAutoresizingMaskIntoConstraints = false,
+                BackgroundColor = UIColor.White,
+                UserInteractionEnabled = true,
+                Lines = 0,
+                TextColor = UIColor.DarkGray,
+                Font = AttributedStringUtilities.AttachmentSubtitleFont,
+                LinkAttributes = AttributedStringUtilities.LinkStringAttributes.Dictionary,
+                EnabledTextCheckingTypes = NSTextCheckingType.Link,
+                WeakDelegate = weakDelegate
+            };
+
+            subtitleLabel.SetContentCompressionResistancePriority (250, UILayoutConstraintAxis.Vertical);
+
+            return subtitleLabel;
+        }
+
+
         public static UILabel GetTimestampLabel ()
         {
             var timestampLabel = new UILabel
@@ -86,11 +128,14 @@ namespace NomadCode.BotFramework.iOS
             {
                 TranslatesAutoresizingMaskIntoConstraints = false,
                 UserInteractionEnabled = false,
-                BackgroundColor = UIColor.FromWhiteAlpha (0.9f, 1.0f),
+                ContentMode = UIViewContentMode.ScaleAspectFit,
+                BackgroundColor = UIColor.FromWhiteAlpha (0.9f, 1.0f)
             };
 
             heroImageView.Layer.CornerRadius = 4;
             heroImageView.Layer.MasksToBounds = true;
+
+            heroImageView.SetContentCompressionResistancePriority (200, UILayoutConstraintAxis.Vertical);
 
             return heroImageView;
         }
@@ -140,7 +185,7 @@ namespace NomadCode.BotFramework.iOS
                 Axis = UILayoutConstraintAxis.Vertical,
                 Spacing = 4,
                 Alignment = UIStackViewAlignment.Fill,
-                Distribution = UIStackViewDistribution.FillEqually
+                Distribution = UIStackViewDistribution.Fill
             };
 
             stackView.SetContentCompressionResistancePriority (200, UILayoutConstraintAxis.Vertical);
