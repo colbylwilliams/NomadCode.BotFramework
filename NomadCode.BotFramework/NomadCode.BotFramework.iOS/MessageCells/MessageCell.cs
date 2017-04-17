@@ -47,6 +47,10 @@ namespace NomadCode.BotFramework.iOS
             new NSString [] { new NSString (@"avatarSize"), new NSString (@"padding"), new NSString (@"right"), new NSString (@"left"), new NSString (@"leftInset") }
         );
 
+        static NSAttributedString emptyAttributedString = new NSAttributedString (string.Empty);
+
+        public List<UIImageView> HeroImageViews = new List<UIImageView> ();
+
         public override UIImageView ImageView => AvatarView;
 
         public UIStackView ContentStackView => _contentStackView ?? (_contentStackView = MessageCellSubviews.GetContentStackView ());
@@ -93,10 +97,12 @@ namespace NomadCode.BotFramework.iOS
             configureViewsForCellType ();
         }
 
-        public List<UIImageView> HeroImageViews = new List<UIImageView> ();
+
         public override void PrepareForReuse ()
         {
             base.PrepareForReuse ();
+
+            BodyLabel.SetText (emptyAttributedString);
 
             if (IsHeaderCell)
             {

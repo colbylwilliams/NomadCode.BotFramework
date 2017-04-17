@@ -6,6 +6,24 @@ using Newtonsoft.Json;
 
 namespace NomadCode.BotFramework
 {
+    public class ThumbnailUrl
+    {
+        /// <summary>
+        /// Gets or sets url pointing to an thumbnail to use for media content
+        /// </summary>
+        [JsonProperty (PropertyName = "url")]
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets alt text to display for screen readers on the
+        /// thumbnail image
+        /// </summary>
+        [JsonProperty (PropertyName = "alt")]
+        public string Alt { get; set; }
+
+    }
+
+
     // generic class to deserialize attachment content into
     public class AttachmentContent
     {
@@ -53,13 +71,26 @@ namespace NomadCode.BotFramework
 
         public bool HasText => !string.IsNullOrEmpty (Text);
 
+
+        IList<CardImage> _images;
+
         /// <summary>
         /// Gets or sets array of images for the card
         /// </summary>
         [JsonProperty (PropertyName = "images")]
-        public IList<CardImage> Images { get; set; }
+        public IList<CardImage> Images
+        {
+            get => _images ?? (_images = Image != null ? new List<CardImage> { new CardImage (Image.Url, Image.Alt) } : null);
+            set => _images = value;
+        }
 
         public bool HasImages => Images?.Count > 0;
+
+        /// <summary>
+        /// Gets or sets thumbnail placeholder
+        /// </summary>
+        [JsonProperty (PropertyName = "image")]
+        public ThumbnailUrl Image { get; set; }
 
         /// <summary>
         /// Gets or sets set of actions applicable to the current card

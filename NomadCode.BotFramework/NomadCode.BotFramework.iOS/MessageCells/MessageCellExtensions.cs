@@ -41,6 +41,15 @@ namespace NomadCode.BotFramework.iOS
                 {
                     foreach (var attachment in message.Attachments)
                     {
+                        // images
+                        if (attachment.Content.HasImages)
+                        {
+                            foreach (var image in attachment.Content.Images)
+                            {
+                                cell.AddHeroImage (indexPath, image.Url);
+                            }
+                        }
+
                         // title
                         if (attachment.Content.HasTitle)
                         {
@@ -57,18 +66,6 @@ namespace NomadCode.BotFramework.iOS
                         if (attachment.Content.HasText)
                         {
                             cell.AddAttachmentText (attachment.Content.AttributedText);
-                        }
-
-                        // images
-                        if (attachment.Content.HasImages)
-                        {
-                            foreach (var image in attachment.Content.Images)
-                            {
-                                // my bot is currently responding with bs image urls, so fill in some super sweet IronMan images for now
-                                var imageUrl = image.Url.Contains ("<ImageUrl1>") ? @"https://s-media-cache-ak0.pinimg.com/originals/5b/26/ff/5b26ff29982e6bd0aa05870ad84e9e7a.png" : image.Url.Contains ("<ImageUrl2>") ? @"https://s-media-cache-ak0.pinimg.com/originals/3b/b1/68/3bb168b56145920fdba25c4678b97bbb.png" : image.Url;
-
-                                cell.AddHeroImage (indexPath, imageUrl);
-                            }
                         }
 
                         // buttons
@@ -282,6 +279,15 @@ namespace NomadCode.BotFramework.iOS
                 {
                     foreach (var attachment in message.Attachments)
                     {
+                        // images
+                        if (attachment.Content.HasImages)
+                        {
+                            foreach (var image in attachment.Content.Images)
+                            {
+                                height += MessageCell.HeroImageSize.Height + MessageCell.StackViewPadding;
+                            }
+                        }
+
                         // title
                         if (attachment.Content.HasTitle)
                         {
@@ -301,15 +307,6 @@ namespace NomadCode.BotFramework.iOS
                         {
                             var attachmentTextBounds = attachment.Content.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
                             height += attachmentTextBounds.Height + MessageCell.StackViewPadding;
-                        }
-
-                        // images
-                        if (attachment.Content.HasImages)
-                        {
-                            foreach (var image in attachment.Content.Images)
-                            {
-                                height += MessageCell.HeroImageSize.Height + MessageCell.StackViewPadding;
-                            }
                         }
 
                         // buttons
