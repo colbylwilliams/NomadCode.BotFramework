@@ -1,13 +1,11 @@
 ﻿#if __IOS__ || __ANDROID__
 
 using System;
-using Microsoft.Bot.Connector.DirectLine;
 using System.Linq;
-
-#if __IOS__
-using Foundation;
 using System.Collections.Generic;
-#endif
+
+using Microsoft.Bot.Connector.DirectLine;
+
 
 namespace NomadCode.BotFramework
 {
@@ -16,9 +14,9 @@ namespace NomadCode.BotFramework
 #if __IOS__
         public nfloat CellHeight { get; set; }
 
-        NSAttributedString _attributedText;
+        Foundation.NSAttributedString _attributedText;
 
-        public NSAttributedString AttributedText => _attributedText ?? (_attributedText = Activity?.Text?.GetMessageAttributedString ());
+        public Foundation.NSAttributedString AttributedText => _attributedText ?? (_attributedText = Activity?.Text?.GetMessageAttributedString ());
 
 #elif __ANDROID__
 		public float CellHeight { get; set; }

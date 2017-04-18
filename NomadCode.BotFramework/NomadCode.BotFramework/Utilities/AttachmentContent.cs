@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Foundation;
+﻿using System.Collections.Generic;
+
 using Microsoft.Bot.Connector.DirectLine;
+
 using Newtonsoft.Json;
 
 namespace NomadCode.BotFramework
@@ -28,14 +28,14 @@ namespace NomadCode.BotFramework
     public class AttachmentContent
     {
 #if __IOS__
-        NSAttributedString _attributedText;
-        public NSAttributedString AttributedText => _attributedText ?? (_attributedText = Text?.GetMessageAttributedString ());
+        Foundation.NSAttributedString _attributedText;
+        public Foundation.NSAttributedString AttributedText => _attributedText ?? (_attributedText = Text?.GetMessageAttributedString ());
 
-        NSAttributedString _attributedTitle;
-        public NSAttributedString AttributedTitle => _attributedTitle ?? (_attributedTitle = Title?.GetAttachmentTitleAttributedString ());
+        Foundation.NSAttributedString _attributedTitle;
+        public Foundation.NSAttributedString AttributedTitle => _attributedTitle ?? (_attributedTitle = Title?.GetAttachmentTitleAttributedString ());
 
-        NSAttributedString _attributedSubtitle;
-        public NSAttributedString AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle?.GetAttachmentSubtitleAttributedString ());
+        Foundation.NSAttributedString _attributedSubtitle;
+        public Foundation.NSAttributedString AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle?.GetAttachmentSubtitleAttributedString ());
 #elif __ANDROID__
         string _attributedText;
         public string AttributedText => _attributedText ?? (_attributedText = Text/*?.GetMessageAttributedString ()*/);
