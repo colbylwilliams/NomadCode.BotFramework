@@ -1,0 +1,953 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v3",
+    "title": "Bot Connector - Direct Line API - v3.0",
+    "description": "Direct Line 3.0",
+    "termsOfService": "https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default.aspx",
+    "contact": {
+      "name": "Bot Framework",
+      "url": "https://botframework.com",
+      "email": "botframework@microsoft.com"
+    },
+    "license": {
+      "name": "The MIT License (MIT)",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "directline.botframework.com",
+  "schemes": [ "https" ],
+  "paths": {
+    "/v3/directline/conversations": {
+      "post": {
+        "tags": [ "Conversations" ],
+        "summary": "Start a new conversation",
+        "operationId": "Conversations_StartConversation",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "responses": {
+          "200": {
+            "description": "The conversation was successfully created, updated, or retrieved.",
+            "schema": { "$ref": "#/definitions/Conversation" }
+          },
+          "201": {
+            "description": "The conversation was successfully created.",
+            "schema": { "$ref": "#/definitions/Conversation" }
+          },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." },
+          "409": { "description": "The object you are trying to create already exists." }
+        },
+        "deprecated": false
+      }
+    },
+    "/v3/directline/conversations/{conversationId}": {
+      "get": {
+        "tags": [ "Conversations" ],
+        "summary": "Get information about an existing conversation",
+        "operationId": "Conversations_ReconnectToConversation",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "conversationId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "watermark",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The conversation was successfully created, updated, or retrieved.",
+            "schema": { "$ref": "#/definitions/Conversation" }
+          },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." }
+        },
+        "deprecated": false
+      }
+    },
+    "/v3/directline/conversations/{conversationId}/activities": {
+      "get": {
+        "tags": [ "Conversations" ],
+        "summary": "Get activities in this conversation. This method is paged with the 'watermark' parameter.",
+        "operationId": "Conversations_GetActivities",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "conversationId",
+            "in": "path",
+            "description": "Conversation ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "watermark",
+            "in": "query",
+            "description": "(Optional) only returns activities newer than this watermark",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A set of activities and a watermark are returned.",
+            "schema": { "$ref": "#/definitions/ActivitySet" }
+          },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [ "Conversations" ],
+        "summary": "Send an activity",
+        "operationId": "Conversations_PostActivity",
+        "consumes": [ "application/json", "text/json", "application/x-www-form-urlencoded" ],
+        "produces": [ "application/json", "text/json", "text/html" ],
+        "parameters": [
+          {
+            "name": "conversationId",
+            "in": "path",
+            "description": "Conversation ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "activity",
+            "in": "body",
+            "description": "Activity to send",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Activity" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The operation succeeded.",
+            "schema": { "$ref": "#/definitions/ResourceResponse" }
+          },
+          "204": { "description": "The operation succeeded. No content was returned." },
+          "400": { "description": "The URL, body, or headers in the request are malformed or invalid." },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." },
+          "500": { "description": "An internal server error has occurred." },
+          "502": { "description": "The bot is unavailable or returned an error." }
+        },
+        "deprecated": false
+      }
+    },
+    "/v3/directline/conversations/{conversationId}/upload": {
+      "post": {
+        "tags": [ "Conversations" ],
+        "summary": "Upload file(s) and send as attachment(s)",
+        "operationId": "Conversations_Upload",
+        "consumes": [ "multipart/form-data" ],
+        "produces": [ "application/json", "text/json", "text/html" ],
+        "parameters": [
+          {
+            "name": "conversationId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The operation succeeded.",
+            "schema": { "$ref": "#/definitions/ResourceResponse" }
+          },
+          "202": { "description": "The request was accepted for processing." },
+          "204": { "description": "The operation succeeded. No content was returned." },
+          "400": { "description": "The URL, body, or headers in the request are malformed or invalid." },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." },
+          "500": { "description": "An internal server error has occurred." },
+          "502": { "description": "The bot is unavailable or returned an error." }
+        },
+        "deprecated": false
+      }
+    },
+    "/v3/directline/tokens/refresh": {
+      "post": {
+        "tags": [ "Tokens" ],
+        "summary": "Refresh a token",
+        "operationId": "Tokens_RefreshToken",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "responses": {
+          "200": {
+            "description": "The conversation was successfully created, updated, or retrieved.",
+            "schema": { "$ref": "#/definitions/Conversation" }
+          },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." },
+          "500": { "description": "An internal server error has occurred." }
+        },
+        "deprecated": false
+      }
+    },
+    "/v3/directline/tokens/generate": {
+      "post": {
+        "tags": [ "Tokens" ],
+        "summary": "Generate a token for a new conversation",
+        "operationId": "Tokens_GenerateTokenForNewConversation",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "responses": {
+          "200": {
+            "description": "The conversation was successfully created, updated, or retrieved.",
+            "schema": { "$ref": "#/definitions/Conversation" }
+          },
+          "401": { "description": "The operation included an invalid or missing Authorization header." },
+          "403": { "description": "You are forbidden from performing this action because your token or secret is invalid." },
+          "404": { "description": "The requested resource was not found." },
+          "500": { "description": "An internal server error has occurred." }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {
+    "Conversation": {
+      "description": "An object representing a conversation or a conversation token",
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "description": "ID for this conversation",
+          "type": "string"
+        },
+        "token": {
+          "description": "Token scoped to this conversation",
+          "type": "string"
+        },
+        "expires_in": {
+          "format": "int32",
+          "description": "Expiration for token",
+          "type": "integer"
+        },
+        "streamUrl": {
+          "description": "URL for this conversation's message stream",
+          "type": "string"
+        },
+        "eTag": { "type": "string" }
+      }
+    },
+    "ActivitySet": {
+      "description": "A collection of activities",
+      "type": "object",
+      "properties": {
+        "activities": {
+          "description": "Activities",
+          "type": "array",
+          "items": { "$ref": "#/definitions/Activity" }
+        },
+        "watermark": {
+          "description": "Maximum watermark of activities within this set",
+          "type": "string"
+        }
+      }
+    },
+    "Activity": {
+      "description": "An Activity is the basic communication type for the Bot Framework 3.0 protocol",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type of the activity [message|contactRelationUpdate|converationUpdate|typing]",
+          "type": "string"
+        },
+        "id": {
+          "description": "Id for the activity",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "description": "UTC Time when message was sent (Set by service)",
+          "type": "string"
+        },
+        "localTimestamp": {
+          "format": "date-time",
+          "description": "Local time when message was sent (set by client Ex: 2016-09-23T13:07:49.4714686-07:00)",
+          "type": "string"
+        },
+        "serviceUrl": {
+          "description": "Service endpoint",
+          "type": "string"
+        },
+        "channelId": {
+          "description": "ChannelId the activity was on",
+          "type": "string"
+        },
+        "from": {
+          "$ref": "#/definitions/ChannelAccount",
+          "description": "Sender address"
+        },
+        "conversation": {
+          "$ref": "#/definitions/ConversationAccount",
+          "description": "Conversation"
+        },
+        "recipient": {
+          "$ref": "#/definitions/ChannelAccount",
+          "description": "(Outbound to bot only) Bot's address that received the message"
+        },
+        "textFormat": {
+          "description": "Format of text fields [plain|markdown] Default:markdown",
+          "type": "string"
+        },
+        "attachmentLayout": {
+          "description": "AttachmentLayout - hint for how to deal with multiple attachments Values: [list|carousel] Default:list",
+          "type": "string"
+        },
+        "membersAdded": {
+          "description": "Array of address added",
+          "type": "array",
+          "items": { "$ref": "#/definitions/ChannelAccount" }
+        },
+        "membersRemoved": {
+          "description": "Array of addresses removed",
+          "type": "array",
+          "items": { "$ref": "#/definitions/ChannelAccount" }
+        },
+        "topicName": {
+          "description": "Conversations new topic name",
+          "type": "string"
+        },
+        "historyDisclosed": {
+          "description": "the previous history of the channel was disclosed",
+          "type": "boolean"
+        },
+        "locale": {
+          "description": "The language code of the Text field",
+          "type": "string"
+        },
+        "text": {
+          "description": "Content for the message",
+          "type": "string"
+        },
+        "summary": {
+          "description": "Text to display if you can't render cards",
+          "type": "string"
+        },
+        "attachments": {
+          "description": "Attachments",
+          "type": "array",
+          "items": { "$ref": "#/definitions/Attachment" }
+        },
+        "entities": {
+          "description": "Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/Entity" }
+        },
+        "channelData": {
+          "$ref": "#/definitions/Object",
+          "description": "Channel specific payload"
+        },
+        "action": {
+          "description": "ContactAdded/Removed action",
+          "type": "string"
+        },
+        "replyToId": {
+          "description": "the original id this message is a response to",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/Object",
+          "description": "Open ended value"
+        }
+      }
+    },
+    "ChannelAccount": {
+      "description": "Channel account information needed to route a message",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Channel id for the user or bot on this channel (Example: joe@smith.com, or @joesmith or 123456)",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display friendly name",
+          "type": "string"
+        }
+      }
+    },
+    "ConversationAccount": {
+      "description": "Channel account information for a conversation",
+      "type": "object",
+      "properties": {
+        "isGroup": {
+          "description": "Is this a reference to a group",
+          "type": "boolean"
+        },
+        "id": {
+          "description": "Channel id for the user or bot on this channel (Example: joe@smith.com, or @joesmith or 123456)",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display friendly name",
+          "type": "string"
+        }
+      }
+    },
+    "Attachment": {
+      "description": "An attachment within an activity",
+      "type": "object",
+      "properties": {
+        "contentType": {
+          "description": "mimetype/Contenttype for the file",
+          "type": "string"
+        },
+        "contentUrl": {
+          "description": "Content Url",
+          "type": "string"
+        },
+        "content": {
+          "$ref": "#/definitions/Object",
+          "description": "Embedded content"
+        },
+        "name": {
+          "description": "(OPTIONAL) The name of the attachment",
+          "type": "string"
+        },
+        "thumbnailUrl": {
+          "description": "(OPTIONAL) Thumbnail associated with attachment",
+          "type": "string"
+        }
+      }
+    },
+    "Entity": {
+      "description": "Object of schema.org types",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Entity Type (typically from schema.org types)",
+          "type": "string"
+        }
+      }
+    },
+    "Object": {
+      "type": "object",
+      "properties": {}
+    },
+    "ResourceResponse": {
+      "description": "A response containing a resource ID",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Id of the resource",
+          "type": "string"
+        }
+      }
+    },
+    "HeroCard": {
+      "description": "A Hero card (card with a single, large image)",
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "Title of the card",
+          "type": "string"
+        },
+        "subtitle": {
+          "description": "Subtitle of the card",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text for the card",
+          "type": "string"
+        },
+        "images": {
+          "description": "Array of images for the card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardImage" }
+        },
+        "buttons": {
+          "description": "Set of actions applicable to the current card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        },
+        "tap": {
+          "$ref": "#/definitions/CardAction",
+          "description": "This action will be activated when user taps on the card itself"
+        }
+      }
+    },
+    "CardImage": {
+      "description": "An image on a card",
+      "type": "object",
+      "properties": {
+        "url": {
+          "description": "URL Thumbnail image for major content property.",
+          "type": "string"
+        },
+        "alt": {
+          "description": "Image description intended for screen readers",
+          "type": "string"
+        },
+        "tap": {
+          "$ref": "#/definitions/CardAction",
+          "description": "Action assigned to specific Attachment.E.g.navigate to specific URL or play/open media content"
+        }
+      }
+    },
+    "CardAction": {
+      "description": "An action on a card",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Defines the type of action implemented by this button.",
+          "type": "string"
+        },
+        "title": {
+          "description": "Text description which appear on the button.",
+          "type": "string"
+        },
+        "image": {
+          "description": "URL Picture which will appear on the button, next to text label.",
+          "type": "string"
+        },
+        "value": {
+          "description": "Supplementary parameter for action. Content of this property depends on the ActionType",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "An HTTP API response",
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/Error",
+          "description": "Error message"
+        }
+      }
+    },
+    "Error": {
+      "description": "Object representing error information",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code",
+          "type": "string"
+        },
+        "message": {
+          "description": "Error message",
+          "type": "string"
+        }
+      }
+    },
+    "AudioCard": {
+      "description": "A audio card",
+      "type": "object",
+      "properties": {
+        "aspect": {
+          "description": "Aspect ratio of thumbnail/media placeholder, allowed values are \"16x9\" and \"9x16\"",
+          "type": "string"
+        },
+        "title": {
+          "description": "Title of the card",
+          "type": "string"
+        },
+        "subtitle": {
+          "description": "Subtitle of the card",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text of the card",
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/ThumbnailUrl",
+          "description": "Thumbnail placeholder"
+        },
+        "media": {
+          "description": "Array of media Url objects",
+          "type": "array",
+          "items": { "$ref": "#/definitions/MediaUrl" }
+        },
+        "buttons": {
+          "description": "Set of actions applicable to the current card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        },
+        "shareable": {
+          "description": "Is it OK for this content to be shareable with others (default:true)",
+          "type": "boolean"
+        },
+        "autoloop": {
+          "description": "Should the client loop playback at end of content (default:true)",
+          "type": "boolean"
+        },
+        "autostart": {
+          "description": "Should the client automatically start playback of video in this card (default:true)",
+          "type": "boolean"
+        }
+      }
+    },
+    "ThumbnailUrl": {
+      "description": "Object describing a media thumbnail",
+      "type": "object",
+      "properties": {
+        "url": {
+          "description": "url pointing to an thumbnail to use for media content",
+          "type": "string"
+        },
+        "alt": {
+          "description": "Alt text to display for screen readers on the thumbnail image",
+          "type": "string"
+        }
+      }
+    },
+    "MediaUrl": {
+      "description": "MediaUrl data",
+      "type": "object",
+      "properties": {
+        "url": {
+          "description": "Url for the media",
+          "type": "string"
+        },
+        "profile": {
+          "description": "Optional profile hint to the client to differentiate multiple MediaUrl objects from each other",
+          "type": "string"
+        }
+      }
+    },
+    "AnimationCard": {
+      "description": "An animation card (Ex: gif or short video clip)",
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "Title of the card",
+          "type": "string"
+        },
+        "subtitle": {
+          "description": "Subtitle of the card",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text of the card",
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/ThumbnailUrl",
+          "description": "Thumbnail placeholder"
+        },
+        "media": {
+          "description": "Array of media Url objects",
+          "type": "array",
+          "items": { "$ref": "#/definitions/MediaUrl" }
+        },
+        "buttons": {
+          "description": "Set of actions applicable to the current card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        },
+        "shareable": {
+          "description": "Is it OK for this content to be shareable with others (default:true)",
+          "type": "boolean"
+        },
+        "autoloop": {
+          "description": "Should the client loop playback at end of content (default:true)",
+          "type": "boolean"
+        },
+        "autostart": {
+          "description": "Should the client automatically start playback of video in this card (default:true)",
+          "type": "boolean"
+        }
+      }
+    },
+    "ReceiptCard": {
+      "description": "A receipt card",
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "Title of the card",
+          "type": "string"
+        },
+        "items": {
+          "description": "Array of Receipt Items",
+          "type": "array",
+          "items": { "$ref": "#/definitions/ReceiptItem" }
+        },
+        "facts": {
+          "description": "Array of Fact Objects   Array of key-value pairs.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/Fact" }
+        },
+        "tap": {
+          "$ref": "#/definitions/CardAction",
+          "description": "This action will be activated when user taps on the card"
+        },
+        "total": {
+          "description": "Total amount of money paid (or should be paid)",
+          "type": "string"
+        },
+        "tax": {
+          "description": "Total amount of TAX paid(or should be paid)",
+          "type": "string"
+        },
+        "vat": {
+          "description": "Total amount of VAT paid(or should be paid)",
+          "type": "string"
+        },
+        "buttons": {
+          "description": "Set of actions applicable to the current card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        }
+      }
+    },
+    "ReceiptItem": {
+      "description": "An item on a receipt card",
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "Title of the Card",
+          "type": "string"
+        },
+        "subtitle": {
+          "description": "Subtitle appears just below Title field, differs from Title in font styling only",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text field appears just below subtitle, differs from Subtitle in font styling only",
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/CardImage",
+          "description": "Image"
+        },
+        "price": {
+          "description": "Amount with currency",
+          "type": "string"
+        },
+        "quantity": {
+          "description": "Number of items of given kind",
+          "type": "string"
+        },
+        "tap": {
+          "$ref": "#/definitions/CardAction",
+          "description": "This action will be activated when user taps on the Item bubble."
+        }
+      }
+    },
+    "Fact": {
+      "description": "Set of key-value pairs. Advantage of this section is that key and value properties will be \r\n            rendered with default style information with some delimiter between them. So there is no need for developer to specify style information.",
+      "type": "object",
+      "properties": {
+        "key": {
+          "description": "The key for this Fact",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value for this Fact",
+          "type": "string"
+        }
+      }
+    },
+    "SigninCard": {
+      "description": "A card representing a request to sign in",
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "Text for signin request",
+          "type": "string"
+        },
+        "buttons": {
+          "description": "Action to use to perform signin",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        }
+      }
+    },
+    "ThumbnailCard": {
+      "description": "A thumbnail card (card with a single, small thumbnail image)",
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "Title of the card",
+          "type": "string"
+        },
+        "subtitle": {
+          "description": "Subtitle of the card",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text for the card",
+          "type": "string"
+        },
+        "images": {
+          "description": "Array of images for the card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardImage" }
+        },
+        "buttons": {
+          "description": "Set of actions applicable to the current card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        },
+        "tap": {
+          "$ref": "#/definitions/CardAction",
+          "description": "This action will be activated when user taps on the card itself"
+        }
+      }
+    },
+    "VideoCard": {
+      "description": "A video card",
+      "type": "object",
+      "properties": {
+        "aspect": {
+          "description": "Aspect ratio (16:9)(4:3)",
+          "type": "string"
+        },
+        "title": {
+          "description": "Title of the card",
+          "type": "string"
+        },
+        "subtitle": {
+          "description": "Subtitle of the card",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text of the card",
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/ThumbnailUrl",
+          "description": "Thumbnail placeholder"
+        },
+        "media": {
+          "description": "Array of media Url objects",
+          "type": "array",
+          "items": { "$ref": "#/definitions/MediaUrl" }
+        },
+        "buttons": {
+          "description": "Set of actions applicable to the current card",
+          "type": "array",
+          "items": { "$ref": "#/definitions/CardAction" }
+        },
+        "shareable": {
+          "description": "Is it OK for this content to be shareable with others (default:true)",
+          "type": "boolean"
+        },
+        "autoloop": {
+          "description": "Should the client loop playback at end of content (default:true)",
+          "type": "boolean"
+        },
+        "autostart": {
+          "description": "Should the client automatically start playback of video in this card (default:true)",
+          "type": "boolean"
+        }
+      }
+    },
+    "GeoCoordinates": {
+      "description": "GeoCoordinates (entity type: \"https://schema.org/GeoCoordinates\")",
+      "type": "object",
+      "properties": {
+        "elevation": {
+          "format": "double",
+          "description": "Elevation of the location [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System)",
+          "type": "number"
+        },
+        "latitude": {
+          "format": "double",
+          "description": "Latitude of the location [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System)",
+          "type": "number"
+        },
+        "longitude": {
+          "format": "double",
+          "description": "Longitude of the location [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System)",
+          "type": "number"
+        },
+        "type": {
+          "description": "The type of the thing",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the thing",
+          "type": "string"
+        }
+      }
+    },
+    "Mention": {
+      "description": "Mention information (entity type: \"mention\")",
+      "type": "object",
+      "properties": {
+        "mentioned": {
+          "$ref": "#/definitions/ChannelAccount",
+          "description": "The mentioned user"
+        },
+        "text": {
+          "description": "Sub Text which represents the mention (can be null or empty)",
+          "type": "string"
+        },
+        "type": {
+          "description": "Entity Type (typically from schema.org types)",
+          "type": "string"
+        }
+      }
+    },
+    "Place": {
+      "description": "Place (entity type: \"https://schema.org/Place\")",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Object",
+          "description": "Address of the place (may be `string` or complex object of type `PostalAddress`)"
+        },
+        "geo": {
+          "$ref": "#/definitions/Object",
+          "description": "Geo coordinates of the place (may be complex object of type `GeoCoordinates` or `GeoShape`)"
+        },
+        "hasMap": {
+          "$ref": "#/definitions/Object",
+          "description": "Map to the place (may be `string` (URL) or complex object of type `Map`)"
+        },
+        "type": {
+          "description": "The type of the thing",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the thing",
+          "type": "string"
+        }
+      }
+    },
+    "Thing": {
+      "description": "Thing (entity type: \"https://schema.org/Thing\")",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type of the thing",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the thing",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

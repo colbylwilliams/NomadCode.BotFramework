@@ -1,0 +1,53 @@
+﻿
+namespace NomadCode.BotFramework
+{
+    using Newtonsoft.Json;
+    using NomadCode.BotFramework;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    /// <summary>
+    /// A card representing a request to sign in
+    /// </summary>
+    public partial class SigninCard
+    {
+        /// <summary>
+        /// Initializes a new instance of the SigninCard class.
+        /// </summary>
+        public SigninCard()
+        {
+          CustomInit();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the SigninCard class.
+        /// </summary>
+        /// <param name="text">Text for signin request</param>
+        /// <param name="buttons">Action to use to perform signin</param>
+        public SigninCard(string text = default(string), IList<CardAction> buttons = default(IList<CardAction>))
+        {
+            Text = text;
+            Buttons = buttons;
+            CustomInit();
+        }
+
+        /// <summary>
+        /// An initialization method that performs custom operations like setting defaults
+        /// </summary>
+        partial void CustomInit();
+
+        /// <summary>
+        /// Gets or sets text for signin request
+        /// </summary>
+        [JsonProperty(PropertyName = "text")]
+        public string Text { get; set; }
+
+        /// <summary>
+        /// Gets or sets action to use to perform signin
+        /// </summary>
+        [JsonProperty(PropertyName = "buttons")]
+        public IList<CardAction> Buttons { get; set; }
+
+    }
+}

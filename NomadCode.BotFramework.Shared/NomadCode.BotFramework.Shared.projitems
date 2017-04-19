@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{CC42E8BE-C9E7-4E23-BF0C-757B1950ECA1}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NomadCode.BotFramework</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\" />
+    <Folder Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Constants\" />
+    <Folder Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Activity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ActivitySet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\AnimationCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Attachment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\AudioCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\CardAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\CardImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ChannelAccount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Conversation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ConversationAccount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Entity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Error.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ErrorResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Fact.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\GeoCoordinates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\HeroCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\MediaUrl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Mention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Place.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ReceiptCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ReceiptItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ResourceResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\SigninCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Thing.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ThumbnailCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\ThumbnailUrl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\VideoCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Conversations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\ConversationsExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\DirectLineClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\IConversations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\IDirectLineClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\ITokens.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Tokens.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\TokensExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\Attachment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\Activity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\AudioCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\AnimationCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\HeroCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\ReceiptCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\SigninCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\ThumbnailCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\VideoCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\AttachmentExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\ConversationReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\DirectLineClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\DirectLineClientCredentials.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\Entity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\ErrorHandling.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\ThumbnailUrl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\MediaUrl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Partials\CardImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\CardContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\SocketExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\PreferenceStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Colors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Log.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\TaskExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\BotMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Keychain.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\SocketStates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Constants\ActionTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Constants\ActivityTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Constants\AttachmentLayouts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Constants\CardContentTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Constants\CardTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\IActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\ICard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\IContactRelationUpdateActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\IConversationUpdateActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\IEndOfConversationActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\IMediaUrl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\IMessageActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\ITriggerActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\ITypingActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\BotClient.cs" />
+  </ItemGroup>
+</Project>
