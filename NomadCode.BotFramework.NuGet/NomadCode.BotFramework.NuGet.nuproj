@@ -5,10 +5,10 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0BDC73BA-2276-4BEF-92FA-15ADF4083F62}</ProjectGuid>
-    <Description>Bot Framework Direct Line client made just for Xamarin</Description>
+    <Description>Bot Framework Direct Line client made just for Xamarin.iOS and Xamarin.Android</Description>
     <PackageId>NomadCode.BotFramework</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
-    <Authors>colbywilliams</Authors>
+    <PackageVersion>0.4.0</PackageVersion>
+    <Authors>Colby Williams</Authors>
     <DevelopmentDependency>false</DevelopmentDependency>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <OutputType>Exe</OutputType>
@@ -16,6 +16,12 @@
     <UsePartialTypes>false</UsePartialTypes>
     <AssemblyName>NomadCode.BotFramework.NuGet</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <Owners>Colby Williams</Owners>
+    <Copyright>Copyright © 2017 Colby Williams</Copyright>
+    <Title>NomadCode.BotFramework</Title>
+    <Summary>Bot Framework Direct Line client made just for Xamarin.iOS and Xamarin.Android</Summary>
+    <PackageProjectUrl>https://github.com/colbylwilliams/NomadCode.BotFramework</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/colbylwilliams/NomadCode.BotFramework/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
