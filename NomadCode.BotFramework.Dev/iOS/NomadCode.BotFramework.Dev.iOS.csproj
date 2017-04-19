@@ -130,7 +130,5 @@
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
   </ItemGroup>
-  <Import Project="..\..\NomadCode.BotFramework\NomadCode.BotFramework.iOS\NomadCode.BotFramework.iOS.projitems" Label="Shared" Condition="Exists('..\..\NomadCode.BotFramework\NomadCode.BotFramework.iOS\NomadCode.BotFramework.iOS.projitems')" />
-  <Import Project="..\..\NomadCode.BotFramework\NomadCode.BotFramework\NomadCode.BotFramework.projitems" Label="Shared" Condition="Exists('..\..\NomadCode.BotFramework\NomadCode.BotFramework\NomadCode.BotFramework.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
