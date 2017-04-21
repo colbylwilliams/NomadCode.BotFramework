@@ -176,9 +176,9 @@ namespace NomadCode.BotFramework.iOS
 		}
 
 
-		static Dictionary<(nfloat Width, nfloat Height), UIImage> placeholders = new Dictionary<(nfloat Width, nfloat Height), UIImage> ();
+		static Dictionary<CGSize, UIImage> placeholders = new Dictionary<CGSize, UIImage> ();
 
-		static UIImage getPlaceholderImage ((nfloat Width, nfloat Height) size)
+		static UIImage getPlaceholderImage (CGSize size)
 		{
 			if (!placeholders.TryGetValue (size, out UIImage placeholder))
 			{
@@ -195,7 +195,7 @@ namespace NomadCode.BotFramework.iOS
 		}
 
 
-		static HNKCacheFormat getCacheFormat ((nfloat Width, nfloat Height) size)
+		static HNKCacheFormat getCacheFormat (CGSize size)
 		{
 			var name = $"avatar{size.GetHashCode ()}";
 
@@ -216,7 +216,7 @@ namespace NomadCode.BotFramework.iOS
 		}
 
 
-		public static MessageCell GetAutoCompleteCell (this List<(string Id, string Name)> items, UITableView tableView, NSIndexPath indexPath)
+		public static MessageCell GetAutoCompleteCell (this List<ISearchResults> items, UITableView tableView, NSIndexPath indexPath)
 		{
 			if (items?.Count > 0 && items.Count > indexPath.Row)
 			{

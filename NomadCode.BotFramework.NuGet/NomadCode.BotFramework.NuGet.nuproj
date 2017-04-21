@@ -7,7 +7,7 @@
     <ProjectGuid>{0BDC73BA-2276-4BEF-92FA-15ADF4083F62}</ProjectGuid>
     <Description>Bot Framework Direct Line client made just for Xamarin.iOS and Xamarin.Android.</Description>
     <PackageId>NomadCode.BotFramework</PackageId>
-    <PackageVersion>0.4.4-preview</PackageVersion>
+    <PackageVersion>0.4.5-preview</PackageVersion>
     <Authors>Colby Williams</Authors>
     <DevelopmentDependency>false</DevelopmentDependency>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -23,7 +23,7 @@
     <PackageProjectUrl>https://github.com/colbylwilliams/NomadCode.BotFramework</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/colbylwilliams/NomadCode.BotFramework/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>NomadCode, Xamarin, Xamarin.iOS, Xamarin.Android, iOS, Android, Microsoft, Bot, BotFramework, DirectLine</PackageTags>
-    <PackageReleaseNotes># 0.4.4-preview
+    <PackageReleaseNotes># 0.4.5-preview
 - Remove NuGet dependency on C# 7 Tuples</PackageReleaseNotes>
     <ReleaseVersion>0.4.4</ReleaseVersion>
   </PropertyGroup>
