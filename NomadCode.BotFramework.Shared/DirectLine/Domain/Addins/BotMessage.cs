@@ -7,6 +7,14 @@ using System.Collections.Generic;
 
 namespace NomadCode.BotFramework
 {
+	public class BotMessageAttachemnt
+	{
+		public Attachment Attachment { get; set; }
+		public CardContent Content { get; set; }
+		public BotMessageAttachemnt () { }
+		public BotMessageAttachemnt (Attachment attachment, CardContent content) { Attachment = attachment; Content = content; }
+	}
+
 	public class BotMessage : IComparable<BotMessage>, IEquatable<BotMessage>
 	{
 #if __IOS__
@@ -43,9 +51,9 @@ namespace NomadCode.BotFramework
 		//public List<CardAction> Buttons => _buttons ?? (_buttons = HasCards ? Attachments.Where (a => a.CardType != CardTypes.Unknown).SelectMany (c => c.Attachment.GetButtons ()).ToList () : new List<CardAction> ());
 
 
-		List<(Attachment Attachment, CardContent Content)> _attachments;
+		List<BotMessageAttachemnt> _attachments;
 
-		public List<(Attachment Attachment, CardContent Content)> Attachments => _attachments ?? (_attachments = Activity?.Attachments?.Select (a => (a, a.GetContent ())).ToList () ?? new List<(Attachment Attachment, CardContent Content)> ());
+		public List<BotMessageAttachemnt> Attachments => _attachments ?? (_attachments = Activity?.Attachments?.Select (a => new BotMessageAttachemnt (a, a.GetContent ())).ToList () ?? new List<BotMessageAttachemnt> ());
 
 
 		//public int ButtonCount

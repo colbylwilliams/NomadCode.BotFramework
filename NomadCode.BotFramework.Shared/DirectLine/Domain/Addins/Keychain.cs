@@ -24,6 +24,14 @@ namespace NomadCode.BotFramework
 	public partial class BotClient
 	{
 
+		class KeychainResult
+		{
+			public string Account { get; set; }
+			public string PrivateKey { get; set; }
+			public KeychainResult () { }
+			public KeychainResult (string account, string privateKey) { Account = account; PrivateKey = privateKey; }
+		}
+
 #if __IOS__
 
         SecRecord genericRecord(string service) => new SecRecord(SecKind.GenericPassword)
@@ -32,7 +40,7 @@ namespace NomadCode.BotFramework
         };
 
 
-        (string Account, string PrivateKey) getItemFromKeychain(string service)
+        KeychainResult getItemFromKeychain(string service)
         {
 			var record = SecKeyChain.QueryAsRecord (genericRecord (service), out SecStatusCode status);
 
@@ -42,11 +50,11 @@ namespace NomadCode.BotFramework
 
                 var privateKey = NSString.FromData(record.ValueData, NSStringEncoding.UTF8).ToString();
 
-                return (account, privateKey);
-            }
+				return new KeychainResult (account, privateKey);
+			}
 
-            return (null, null);
-        }
+			return new KeychainResult ();
+		}
 
 
         bool saveItemToKeychain(string service, string account, string privateKey)
@@ -134,7 +142,7 @@ namespace NomadCode.BotFramework
 		}
 
 
-		(string Account, string PrivateKey) getItemFromKeychain (string service)
+		KeychainResult getItemFromKeychain (string service)
 		{
 			var context = Android.App.Application.Context;
 
@@ -158,11 +166,11 @@ namespace NomadCode.BotFramework
 
 					var serialized = System.Text.Encoding.UTF8.GetString (bytes);
 
-					return (alias, serialized);
+					return new KeychainResult (alias, serialized);
 				}
 			}
 
-			return (null, null);
+			return new KeychainResult ();
 		}
 
 
@@ -193,7 +201,8 @@ namespace NomadCode.BotFramework
 
 		bool removeItemFromKeychain (string service)
 		{
-			throw new NotImplementedException ();
+			return true;
+			//throw new NotImplementedException ();
 		}
 
 
