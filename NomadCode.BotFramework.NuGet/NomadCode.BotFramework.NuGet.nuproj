@@ -40,7 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NomadCode.BotFramework.Android\NomadCode.BotFramework.Android.csproj">
       <Project>{14C25364-C5DB-45B9-B60A-218D98E0C7FF}</Project>
-      <Name>NomadCode.BotFramework.Android</Name>
+      <Name>NomadCode.BotFramework.Droid</Name>
     </ProjectReference>
     <ProjectReference Include="..\NomadCode.BotFramework.iOS\NomadCode.BotFramework.iOS.csproj">
       <Project>{FEE592DB-086A-4F1F-BDF2-FC3F95620393}</Project>

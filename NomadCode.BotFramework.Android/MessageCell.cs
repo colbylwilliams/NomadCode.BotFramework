@@ -13,7 +13,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Graphics;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public class MessageCell : ViewGroup
 	{
@@ -27,9 +27,18 @@ namespace NomadCode.BotFramework.Android
 				{
 					var size = new Point ();
 
-					((IWindowManager)Application.Context.GetSystemService (Context.WindowService)).DefaultDisplay.GetRealSize (size);
+					if (Application.Context.GetSystemService (Context.WindowService) is IWindowManager windowManager)
+					{
+						Log.Debug ($"{windowManager}");
 
-					_contentWidth = size.X - 49;
+						windowManager.DefaultDisplay.GetRealSize (size);
+
+						_contentWidth = size.X - 49;
+					}
+					else
+					{
+						Log.Error ("Could not cast windowManager");
+					}
 				}
 
 				return _contentWidth;
@@ -102,6 +111,10 @@ namespace NomadCode.BotFramework.Android
 			base (context)
 		{
 			ViewType = viewType;
+
+			ContentView = new LinearLayout (context) { Orientation = Orientation.Vertical };
+
+			configureViewsForCellType ();
 		}
 
 

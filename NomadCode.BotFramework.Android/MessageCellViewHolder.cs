@@ -1,6 +1,6 @@
 ﻿using Android.Support.V7.Widget;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public class MessageCellViewHolder : RecyclerView.ViewHolder
 	{

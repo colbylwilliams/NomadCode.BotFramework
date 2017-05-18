@@ -12,7 +12,7 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public class BotFragment : Fragment
 	{
@@ -27,7 +27,7 @@ namespace NomadCode.BotFramework.Android
 		{
 			// Use this to return your custom view for this Fragment
 			// return inflater.Inflate(Resource.Layout.YourFragment, container, false);
-			return new MessagesView (container.Context);
+			return new MessagesView (Activity);
 
 
 			//return base.OnCreateView (inflater, container, savedInstanceState);

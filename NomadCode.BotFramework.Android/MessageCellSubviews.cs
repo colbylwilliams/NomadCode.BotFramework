@@ -1,7 +1,7 @@
 ﻿using Android.Content;
 using Android.Widget;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public static class MessageCellSubviews
 	{
@@ -53,7 +53,7 @@ namespace NomadCode.BotFramework.Android
 
 			};
 
-			subTitleLabel.SetTextColor (global::Android.Graphics.Color.DarkGray);
+			subTitleLabel.SetTextColor (Android.Graphics.Color.DarkGray);
 			subTitleLabel.SetLinkTextColor (Colors.MessageLinkColor);
 
 			return subTitleLabel;
@@ -67,7 +67,7 @@ namespace NomadCode.BotFramework.Android
 
 			};
 
-			timestampLabel.SetTextColor (global::Android.Graphics.Color.LightGray);
+			timestampLabel.SetTextColor (Android.Graphics.Color.LightGray);
 
 			return timestampLabel;
 		}
@@ -113,7 +113,7 @@ namespace NomadCode.BotFramework.Android
 				Text = title
 			};
 
-			button.SetTextColor (global::Android.Graphics.Color.DarkGray);
+			button.SetTextColor (Android.Graphics.Color.DarkGray);
 
 			return button;
 		}

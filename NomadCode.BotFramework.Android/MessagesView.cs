@@ -13,11 +13,11 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public class MessagesView : RecyclerView
 	{
-		public global::Android.App.Activity Activity => Context as global::Android.App.Activity;
+		public Android.App.Activity Activity => Context as Android.App.Activity;
 
 
 		MessagesAdapter messagesAdapter;
@@ -42,7 +42,14 @@ namespace NomadCode.BotFramework.Android
 
 		void Initialize ()
 		{
-			Rotation = 180;
+			//Rotation = 180;
+
+			LinearLayoutManager llm = new LinearLayoutManager (Context/*, LinearLayoutManager.Vertical, false*/)
+			{
+				Orientation = LinearLayoutManager.Vertical
+			};
+
+			SetLayoutManager (llm);
 
 			messagesAdapter = new MessagesAdapter (this);
 

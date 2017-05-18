@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Android.Text;
 using Android.Content.Res;
 using Android.App;
+using Android;
 
 namespace NomadCode.BotFramework
 {
@@ -64,11 +65,11 @@ namespace NomadCode.BotFramework
 		public static float MessageFontSize = 16;
 		public static float TimestampFontSize = 11;
 
-		public static readonly int HeaderFont = global::Android.Resource.Style.TextAppearanceMaterialHeadline;
-		public static readonly int MessageFont = global::Android.Resource.Style.TextAppearanceMaterialBody1;
-		public static readonly int TimestampFont = global::Android.Resource.Style.TextAppearanceMaterialCaption;
-		public static readonly int AttachmentTitleFont = global::Android.Resource.Style.TextAppearanceMaterialSubhead;
-		public static readonly int AttachmentSubtitleFont = global::Android.Resource.Style.TextAppearanceMaterialSubhead;
+		public static readonly int HeaderFont = Resource.Style.TextAppearanceMaterialHeadline;
+		public static readonly int MessageFont = Resource.Style.TextAppearanceMaterialBody1;
+		public static readonly int TimestampFont = Resource.Style.TextAppearanceMaterialCaption;
+		public static readonly int AttachmentTitleFont = Resource.Style.TextAppearanceMaterialSubhead;
+		public static readonly int AttachmentSubtitleFont = Resource.Style.TextAppearanceMaterialSubhead;
 
 		//static int messageFontBold = UIFont.BoldSystemFontOfSize (MessageFontSize);
 		//static int messageFontItalic = UIFont.ItalicSystemFontOfSize (MessageFontSize);

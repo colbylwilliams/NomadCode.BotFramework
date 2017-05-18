@@ -9,9 +9,9 @@ namespace NomadCode.BotFramework
         public static UIKit.UIColor MessageLinkColor = UIKit.UIColor.FromRGBA (43f / 255f, 128f / 255f, 185f / 255f, 255f / 255f);
         public static UIKit.UIColor MessagePreColor = UIKit.UIColor.FromWhiteAlpha (0.9f, 0.9f);
 #elif __ANDROID__
-		public static global::Android.Graphics.Color MessageColor = global::Android.Graphics.Color.Rgb (44 / 255, 45 / 255, 48 / 255);
-		public static global::Android.Graphics.Color MessageLinkColor = global::Android.Graphics.Color.Rgb (43 / 255, 128 / 255, 185 / 255);
-		public static global::Android.Graphics.Color MessagePreColor = global::Android.Graphics.Color.WhiteSmoke; //.Rgb (43 / 255, 128 / 255, 185 / 255);
+		public static Android.Graphics.Color MessageColor = Android.Graphics.Color.Rgb (44 / 255, 45 / 255, 48 / 255);
+		public static Android.Graphics.Color MessageLinkColor = Android.Graphics.Color.Rgb (43 / 255, 128 / 255, 185 / 255);
+		public static Android.Graphics.Color MessagePreColor = Android.Graphics.Color.WhiteSmoke; //.Rgb (43 / 255, 128 / 255, 185 / 255);
 #endif
 	}
 }

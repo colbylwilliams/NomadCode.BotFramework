@@ -5,7 +5,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NomadCode.BotFramework.Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomadCode.BotFramework.iOS", "NomadCode.BotFramework.iOS\NomadCode.BotFramework.iOS.csproj", "{FEE592DB-086A-4F1F-BDF2-FC3F95620393}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomadCode.BotFramework.Android", "NomadCode.BotFramework.Android\NomadCode.BotFramework.Android.csproj", "{14C25364-C5DB-45B9-B60A-218D98E0C7FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomadCode.BotFramework.Droid", "NomadCode.BotFramework.Android\NomadCode.BotFramework.Droid.csproj", "{14C25364-C5DB-45B9-B60A-218D98E0C7FF}"
 EndProject
 Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "NomadCode.BotFramework.NuGet", "NomadCode.BotFramework.NuGet\NomadCode.BotFramework.NuGet.nuproj", "{0BDC73BA-2276-4BEF-92FA-15ADF4083F62}"
 EndProject
@@ -93,6 +93,9 @@ Global
 		$1.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $2
 		$2.scope = text/x-csharp
+		$2.SpacingAfterMethodDeclarationName = True
+		$2.SpaceAfterMethodCallName = True
+		$2.SpaceBeforeOpenSquareBracket = True
 		$0.TextStylePolicy = $3
 		$3.scope = text/plain
 		version = 0.4.4

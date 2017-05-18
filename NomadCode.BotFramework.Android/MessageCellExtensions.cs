@@ -9,7 +9,7 @@ using Android.Util;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public static class MessageCellExtensions
 	{

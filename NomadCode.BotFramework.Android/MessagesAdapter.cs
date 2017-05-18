@@ -7,7 +7,7 @@ using Android.App;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
 
-namespace NomadCode.BotFramework.Android
+namespace NomadCode.BotFramework.Droid
 {
 	public class MessagesAdapter : RecyclerView.Adapter
 	{
@@ -15,7 +15,7 @@ namespace NomadCode.BotFramework.Android
 
 		MessagesView MessagesView;
 
-		public MessagesAdapter (MessagesView messagesView)
+		public MessagesAdapter(MessagesView messagesView)
 		{
 			MessagesView = messagesView;
 
@@ -25,11 +25,13 @@ namespace NomadCode.BotFramework.Android
 		}
 
 
-		void addNewMessage (bool send = true)
+		void addNewMessage(bool send = true)
 		{
-			Log.Debug ($"addNewMessage {send}");
+			Log.Debug($"addNewMessage {send}");
 
-			NotifyItemInserted (0);
+			//NotifyItemInserted (0);
+
+			NotifyDataSetChanged();
 
 			// This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
 			//TextView.RefreshFirstResponder ();
@@ -64,44 +66,57 @@ namespace NomadCode.BotFramework.Android
 
 		#region RecyclerView.Adapter
 
-		public override int ItemCount => Messages.Count;
-
-
-		public override void OnBindViewHolder (RecyclerView.ViewHolder holder, int position)
+		public override int ItemCount
 		{
-			if (holder is MessageCellViewHolder messageHolder)
+			get
 			{
-				Messages.SetMessageCell (messageHolder.MessageCell, position);
+				Log.Debug($"ItemCount > {Messages.Count}");
+
+				return Messages.Count;
 			}
 		}
 
 
-		public override RecyclerView.ViewHolder OnCreateViewHolder (ViewGroup parent, int viewType)
+		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
+		{
+			if (holder is MessageCellViewHolder messageHolder)
+			{
+				Messages.SetMessageCell(messageHolder.MessageCell, position);
+			}
+
+			Log.Debug($"OnBindViewHolder > {position} : {holder}");
+		}
+
+
+		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
 		{
 			//var rootView = LayoutInflater.From (parent.Context).Inflate (viewType, parent, false);
 
-			var messageCell = new MessageCell (parent.Context, viewType);
 
-			var holder = new MessageCellViewHolder (messageCell);
+			var messageCell = new MessageCell(parent.Context, viewType);
+
+			var holder = new MessageCellViewHolder(messageCell);
+
+			Log.Debug($"OnCreateViewHolder > {viewType} : {messageCell} | {holder}");
 
 			return holder;
 		}
 
 
-		public override int GetItemViewType (int position)
+		public override int GetItemViewType(int position)
 		{
-			return Messages [position].Head ? 1 : 0;
+			return Messages[position].Head ? 1 : 0;
 		}
 
 
-		public override void OnViewRecycled (Java.Lang.Object holder)
+		public override void OnViewRecycled(Java.Lang.Object holder)
 		{
 			if (holder is MessageCellViewHolder messageHolder)
 			{
-				messageHolder.MessageCell.PrepareForReuse ();
+				messageHolder.MessageCell.PrepareForReuse();
 			}
 
-			base.OnViewRecycled (holder);
+			base.OnViewRecycled(holder);
 		}
 
 
@@ -110,58 +125,58 @@ namespace NomadCode.BotFramework.Android
 
 		#region BotClient Event Handlers
 
-		void handleBotClientMessagesChanged (object sender, NotifyCollectionChangedEventArgs e)
+		void handleBotClientMessagesChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			Log.Debug ($"{e.Action}");
+			Log.Debug($"{e.Action}");
 
-			BeginInvokeOnMainThread (() =>
-			{
-				switch (e.Action)
-				{
-					case NotifyCollectionChangedAction.Add:
-						addNewMessage (false);
-						break;
-					case NotifyCollectionChangedAction.Remove:
-						NotifyItemRemoved (e.OldStartingIndex);
-						//TableView.DeleteRows (new [] { NSIndexPath.FromIndex ((nuint)e.OldStartingIndex) }, UITableViewRowAnimation.None);
-						break;
-					case NotifyCollectionChangedAction.Replace:
-						//NotifyItemChanged (e.OldStartingIndex);
-						NotifyDataSetChanged ();
-						//TableView.ReloadData ();
-						break;
-					case NotifyCollectionChangedAction.Reset:
-						NotifyDataSetChanged ();
-						//TableView.ReloadData ();
-						//TableView.SlackScrollToTop (false);
-						break;
-				}
-			});
+			BeginInvokeOnMainThread(() =>
+		   {
+			   switch (e.Action)
+			   {
+				   case NotifyCollectionChangedAction.Add:
+					   addNewMessage(false);
+					   break;
+				   case NotifyCollectionChangedAction.Remove:
+					   NotifyItemRemoved(e.OldStartingIndex);
+					   //TableView.DeleteRows (new [] { NSIndexPath.FromIndex ((nuint)e.OldStartingIndex) }, UITableViewRowAnimation.None);
+					   break;
+				   case NotifyCollectionChangedAction.Replace:
+					   //NotifyItemChanged (e.OldStartingIndex);
+					   NotifyDataSetChanged();
+					   //TableView.ReloadData ();
+					   break;
+				   case NotifyCollectionChangedAction.Reset:
+					   NotifyDataSetChanged();
+					   //TableView.ReloadData ();
+					   //TableView.SlackScrollToTop (false);
+					   break;
+			   }
+		   });
 		}
 
 
-		void handleBotClientReadyStateChanged (object sender, SocketStateChangedEventArgs e)
+		void handleBotClientReadyStateChanged(object sender, SocketStateChangedEventArgs e)
 		{
-			Log.Debug ($"{e.SocketState}");
+			Log.Debug($"{e.SocketState}");
 
-			BeginInvokeOnMainThread (() =>
-			{
-				switch (e.SocketState)
-				{
-					case SocketStates.Open:
-						//RightButton.Enabled = true;
-						break;
-					case SocketStates.Closing:
-						//RightButton.Enabled = false;
-						break;
-				}
-			});
+			BeginInvokeOnMainThread(() =>
+		   {
+			   switch (e.SocketState)
+			   {
+				   case SocketStates.Open:
+					   //RightButton.Enabled = true;
+					   break;
+				   case SocketStates.Closing:
+					   //RightButton.Enabled = false;
+					   break;
+			   }
+		   });
 		}
 
 
-		void handleBotClientUserTypingMessageReceived (object sender, string e)
+		void handleBotClientUserTypingMessageReceived(object sender, string e)
 		{
-			if (!string.IsNullOrEmpty (e))
+			if (!string.IsNullOrEmpty(e))
 			{
 				//TypingIndicatorView.InsertUsername (e);
 
@@ -177,6 +192,6 @@ namespace NomadCode.BotFramework.Android
 		#endregion
 
 
-		void BeginInvokeOnMainThread (Action action) => MessagesView?.Activity?.RunOnUiThread (action);
+		void BeginInvokeOnMainThread(Action action) => MessagesView?.Activity?.RunOnUiThread(action);
 	}
 }
