@@ -27,9 +27,9 @@ namespace NomadCode.BotFramework.Droid
 				{
 					var size = new Point ();
 
-					if (Application.Context.GetSystemService (Context.WindowService) is IWindowManager windowManager)
+					if (Application.Context.GetSystemService (Context.WindowService).JavaCast<IWindowManager> () is IWindowManager windowManager)
 					{
-						Log.Debug ($"{windowManager}");
+						Log.Debug ($"IWindowManager = {windowManager}");
 
 						windowManager.DefaultDisplay.GetRealSize (size);
 
@@ -112,7 +112,9 @@ namespace NomadCode.BotFramework.Droid
 		{
 			ViewType = viewType;
 
-			ContentView = new LinearLayout (context) { Orientation = Orientation.Vertical };
+			LayoutParameters = new LayoutParams (200, 100);
+
+			ContentView = new LinearLayout (context) { Orientation = Orientation.Vertical, LayoutParameters = new LayoutParams (200, 100) };
 
 			configureViewsForCellType ();
 		}

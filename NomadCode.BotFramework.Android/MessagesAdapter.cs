@@ -15,7 +15,7 @@ namespace NomadCode.BotFramework.Droid
 
 		MessagesView MessagesView;
 
-		public MessagesAdapter(MessagesView messagesView)
+		public MessagesAdapter (MessagesView messagesView)
 		{
 			MessagesView = messagesView;
 
@@ -25,13 +25,13 @@ namespace NomadCode.BotFramework.Droid
 		}
 
 
-		void addNewMessage(bool send = true)
+		void addNewMessage (bool send = true)
 		{
-			Log.Debug($"addNewMessage {send}");
+			Log.Debug ($"addNewMessage {send}");
 
 			//NotifyItemInserted (0);
 
-			NotifyDataSetChanged();
+			NotifyDataSetChanged ();
 
 			// This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
 			//TextView.RefreshFirstResponder ();
@@ -70,53 +70,53 @@ namespace NomadCode.BotFramework.Droid
 		{
 			get
 			{
-				Log.Debug($"ItemCount > {Messages.Count}");
+				Log.Debug ($"ItemCount > {Messages.Count}");
 
 				return Messages.Count;
 			}
 		}
 
 
-		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
+		public override void OnBindViewHolder (RecyclerView.ViewHolder holder, int position)
 		{
 			if (holder is MessageCellViewHolder messageHolder)
 			{
-				Messages.SetMessageCell(messageHolder.MessageCell, position);
+				Messages.SetMessageCell (messageHolder.MessageCell, position);
 			}
 
-			Log.Debug($"OnBindViewHolder > {position} : {holder}");
+			Log.Debug ($"OnBindViewHolder > {position} : {holder}");
 		}
 
 
-		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
+		public override RecyclerView.ViewHolder OnCreateViewHolder (ViewGroup parent, int viewType)
 		{
 			//var rootView = LayoutInflater.From (parent.Context).Inflate (viewType, parent, false);
 
 
-			var messageCell = new MessageCell(parent.Context, viewType);
+			var messageCell = new MessageCell (parent.Context, viewType);
 
-			var holder = new MessageCellViewHolder(messageCell);
+			var holder = new MessageCellViewHolder (messageCell);
 
-			Log.Debug($"OnCreateViewHolder > {viewType} : {messageCell} | {holder}");
+			Log.Debug ($"OnCreateViewHolder > {viewType} : {messageCell} | {holder}");
 
 			return holder;
 		}
 
 
-		public override int GetItemViewType(int position)
+		public override int GetItemViewType (int position)
 		{
-			return Messages[position].Head ? 1 : 0;
+			return Messages [position].Head ? 1 : 0;
 		}
 
 
-		public override void OnViewRecycled(Java.Lang.Object holder)
+		public override void OnViewRecycled (Java.Lang.Object holder)
 		{
 			if (holder is MessageCellViewHolder messageHolder)
 			{
-				messageHolder.MessageCell.PrepareForReuse();
+				messageHolder.MessageCell.PrepareForReuse ();
 			}
 
-			base.OnViewRecycled(holder);
+			base.OnViewRecycled (holder);
 		}
 
 
@@ -125,58 +125,58 @@ namespace NomadCode.BotFramework.Droid
 
 		#region BotClient Event Handlers
 
-		void handleBotClientMessagesChanged(object sender, NotifyCollectionChangedEventArgs e)
+		void handleBotClientMessagesChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			Log.Debug($"{e.Action}");
+			Log.Debug ($"{e.Action}");
 
-			BeginInvokeOnMainThread(() =>
-		   {
-			   switch (e.Action)
-			   {
-				   case NotifyCollectionChangedAction.Add:
-					   addNewMessage(false);
-					   break;
-				   case NotifyCollectionChangedAction.Remove:
-					   NotifyItemRemoved(e.OldStartingIndex);
+			BeginInvokeOnMainThread (() =>
+			{
+				switch (e.Action)
+				{
+					case NotifyCollectionChangedAction.Add:
+						addNewMessage (false);
+						break;
+					case NotifyCollectionChangedAction.Remove:
+						NotifyItemRemoved (e.OldStartingIndex);
 					   //TableView.DeleteRows (new [] { NSIndexPath.FromIndex ((nuint)e.OldStartingIndex) }, UITableViewRowAnimation.None);
 					   break;
-				   case NotifyCollectionChangedAction.Replace:
+					case NotifyCollectionChangedAction.Replace:
 					   //NotifyItemChanged (e.OldStartingIndex);
-					   NotifyDataSetChanged();
+					   NotifyDataSetChanged ();
 					   //TableView.ReloadData ();
 					   break;
-				   case NotifyCollectionChangedAction.Reset:
-					   NotifyDataSetChanged();
+					case NotifyCollectionChangedAction.Reset:
+						NotifyDataSetChanged ();
 					   //TableView.ReloadData ();
 					   //TableView.SlackScrollToTop (false);
 					   break;
-			   }
-		   });
+				}
+			});
 		}
 
 
-		void handleBotClientReadyStateChanged(object sender, SocketStateChangedEventArgs e)
+		void handleBotClientReadyStateChanged (object sender, SocketStateChangedEventArgs e)
 		{
-			Log.Debug($"{e.SocketState}");
+			Log.Debug ($"{e.SocketState}");
 
-			BeginInvokeOnMainThread(() =>
-		   {
-			   switch (e.SocketState)
-			   {
-				   case SocketStates.Open:
+			BeginInvokeOnMainThread (() =>
+			{
+				switch (e.SocketState)
+				{
+					case SocketStates.Open:
 					   //RightButton.Enabled = true;
 					   break;
-				   case SocketStates.Closing:
+					case SocketStates.Closing:
 					   //RightButton.Enabled = false;
 					   break;
-			   }
-		   });
+				}
+			});
 		}
 
 
-		void handleBotClientUserTypingMessageReceived(object sender, string e)
+		void handleBotClientUserTypingMessageReceived (object sender, string e)
 		{
-			if (!string.IsNullOrEmpty(e))
+			if (!string.IsNullOrEmpty (e))
 			{
 				//TypingIndicatorView.InsertUsername (e);
 
@@ -192,6 +192,6 @@ namespace NomadCode.BotFramework.Droid
 		#endregion
 
 
-		void BeginInvokeOnMainThread(Action action) => MessagesView?.Activity?.RunOnUiThread(action);
+		void BeginInvokeOnMainThread (Action action) => MessagesView?.Activity?.RunOnUiThread (action);
 	}
 }
