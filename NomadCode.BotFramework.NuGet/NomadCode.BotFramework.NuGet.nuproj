@@ -15,7 +15,7 @@
     <RootNamespace>NomadCode.BotFramework</RootNamespace>
     <UsePartialTypes>false</UsePartialTypes>
     <AssemblyName>NomadCode.BotFramework.NuGet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <Owners>colbylwilliams</Owners>
     <Copyright>Copyright © 2017 Colby Williams</Copyright>
     <Title>NomadCode.BotFramework</Title>

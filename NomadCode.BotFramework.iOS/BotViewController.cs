@@ -55,9 +55,9 @@ namespace NomadCode.BotFramework.iOS
 
 			TableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
 
-			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCellReuseIds.MessageCellReuseId);
-			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCellReuseIds.MessageHeaderCellReuseId);
-			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCellReuseIds.AutoCompleteReuseId);
+			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.MessageCellReuseId);
+			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.MessageHeaderCellReuseId);
+			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.AutoCompleteReuseId);
 		}
 
 

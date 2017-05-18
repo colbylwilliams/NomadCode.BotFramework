@@ -91,5 +91,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\ITriggerActivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\ITypingActivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\BotClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\MessageCellTypes.cs" />
   </ItemGroup>
 </Project>

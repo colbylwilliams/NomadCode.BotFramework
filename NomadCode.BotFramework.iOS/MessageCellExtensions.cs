@@ -20,7 +20,7 @@ namespace NomadCode.BotFramework.iOS
 			{
 				var message = messages [row];
 
-				var reuseId = message.Head ? MessageCellReuseIds.MessageHeaderCellReuseId : MessageCellReuseIds.MessageCellReuseId;
+				var reuseId = message.Head ? MessageCell.MessageHeaderCellReuseId : MessageCell.MessageCellReuseId;
 
 				var cell = tableView.DequeueReusableCell (reuseId, indexPath) as MessageCell;
 
@@ -222,7 +222,7 @@ namespace NomadCode.BotFramework.iOS
 			{
 				//Log.Debug ($"GetAutoCompleteCell = [{indexPath}]");
 
-				var cell = tableView.DequeueReusableCell (MessageCellReuseIds.AutoCompleteReuseId, indexPath) as MessageCell;
+				var cell = tableView.DequeueReusableCell (MessageCell.AutoCompleteReuseId, indexPath) as MessageCell;
 				cell.IndexPath = indexPath;
 
 				var text = items [indexPath.Row].Name;

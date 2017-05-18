@@ -2,30 +2,25 @@
 
 using Newtonsoft.Json;
 
+#if __IOS__
+using AttributedString = Foundation.NSAttributedString;
+#elif __ANDROID__
+using AttributedString = Android.Text.SpannableStringBuilder;
+#endif
+
 namespace NomadCode.BotFramework
 {
 	// generic class to deserialize attachment content into
 	public class CardContent
 	{
-#if __IOS__
-        Foundation.NSAttributedString _attributedText;
-        public Foundation.NSAttributedString AttributedText => _attributedText ?? (_attributedText = Text?.GetMessageAttributedString ());
+		AttributedString _attributedText;
+		public AttributedString AttributedText => _attributedText ?? (_attributedText = Text?.GetMessageAttributedString ());
 
-        Foundation.NSAttributedString _attributedTitle;
-        public Foundation.NSAttributedString AttributedTitle => _attributedTitle ?? (_attributedTitle = Title?.GetAttachmentTitleAttributedString ());
+		AttributedString _attributedTitle;
+		public AttributedString AttributedTitle => _attributedTitle ?? (_attributedTitle = Title?.GetAttachmentTitleAttributedString ());
 
-        Foundation.NSAttributedString _attributedSubtitle;
-        public Foundation.NSAttributedString AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle?.GetAttachmentSubtitleAttributedString ());
-#elif __ANDROID__
-		string _attributedText;
-		public string AttributedText => _attributedText ?? (_attributedText = Text/*?.GetMessageAttributedString ()*/);
-
-		string _attributedTitle;
-		public string AttributedTitle => _attributedTitle ?? (_attributedTitle = Title/*?.GetMessageAttributedString ()*/);
-
-		string _attributedSubtitle;
-		public string AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle/*?.GetMessageAttributedString ()*/);
-#endif
+		AttributedString _attributedSubtitle;
+		public AttributedString AttributedSubtitle => _attributedSubtitle ?? (_attributedSubtitle = Subtitle?.GetAttachmentSubtitleAttributedString ());
 
 
 		// maybe set content type to know if the images are hero or thumbnail?

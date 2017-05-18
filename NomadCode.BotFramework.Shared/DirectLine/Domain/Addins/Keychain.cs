@@ -107,7 +107,7 @@ namespace NomadCode.BotFramework
 
 		KeyStore getKeystore (string service)
 		{
-			var context = Android.App.Application.Context;
+			var context = global::Android.App.Application.Context;
 
 
 			var serviceId = $"{context.PackageName}.nomadcode.botframework-{service}";
@@ -144,7 +144,7 @@ namespace NomadCode.BotFramework
 
 		KeychainResult getItemFromKeychain (string service)
 		{
-			var context = Android.App.Application.Context;
+			var context = global::Android.App.Application.Context;
 
 			var password = service.ToCharArray ();
 
@@ -176,7 +176,7 @@ namespace NomadCode.BotFramework
 
 		bool saveItemToKeychain (string service, string account, string privateKey)
 		{
-			var context = Android.App.Application.Context;
+			var context = global::Android.App.Application.Context;
 
 			var password = service.ToCharArray ();
 

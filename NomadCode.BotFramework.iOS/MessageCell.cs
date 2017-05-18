@@ -11,6 +11,10 @@ namespace NomadCode.BotFramework.iOS
 {
 	public class MessageCell : UITableViewCell, ITTTAttributedLabelDelegate
 	{
+		public static readonly NSString MessageCellReuseId = new NSString ("MessageCellReuseId");
+		public static readonly NSString MessageHeaderCellReuseId = new NSString ("MessageHeaderCellReuseId");
+		public static readonly NSString AutoCompleteReuseId = new NSString ("AutoCompletionCell");
+
 		public static readonly nfloat StackViewPadding = 5;
 
 		public static readonly nfloat AutoCompleteHeight = 50;
@@ -82,11 +86,7 @@ namespace NomadCode.BotFramework.iOS
 
 		bool? _isHeaderCell;
 
-		public bool IsHeaderCell => _isHeaderCell ?? (_isHeaderCell = ReuseIdentifier.IsHeaderCell ()).Value;
-
-		MessageCellTypes _messageCellType;
-
-		public MessageCellTypes MessageCellType => _messageCellType == MessageCellTypes.Unknown ? (_messageCellType = ReuseIdentifier.MessageCellType ()) : _messageCellType;
+		public bool IsHeaderCell => _isHeaderCell ?? (_isHeaderCell = ReuseIdentifier == MessageHeaderCellReuseId).Value;
 
 
 		[Export ("initWithStyle:reuseIdentifier:")]
@@ -215,28 +215,10 @@ namespace NomadCode.BotFramework.iOS
 				configureViewsForHeaderCell ();
 			}
 
-			switch (MessageCellType)
-			{
-				case MessageCellTypes.Message:
 
-					ContentView.AddSubview (BodyLabel);
+			ContentView.AddSubview (BodyLabel);
 
-					constraintViews.Add (new NSString (@"contentView"), BodyLabel);
-
-					break;
-				case MessageCellTypes.Hero:
-
-					break;
-				case MessageCellTypes.Thumbnail:
-
-					break;
-				case MessageCellTypes.Receipt:
-
-					break;
-				case MessageCellTypes.Signin:
-
-					break;
-			}
+			constraintViews.Add (new NSString (@"contentView"), BodyLabel);
 
 
 			ContentView.AddSubview (ContentStackView);

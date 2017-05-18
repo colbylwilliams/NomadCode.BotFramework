@@ -4,6 +4,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+#if __IOS__
+using AttributedString = Foundation.NSAttributedString;
+#elif __ANDROID__
+using AttributedString = Android.Text.SpannableStringBuilder;
+#endif
+
 
 namespace NomadCode.BotFramework
 {
@@ -19,18 +25,14 @@ namespace NomadCode.BotFramework
 	{
 #if __IOS__
         public nfloat CellHeight { get; set; }
-
-        Foundation.NSAttributedString _attributedText;
-
-        public Foundation.NSAttributedString AttributedText => _attributedText ?? (_attributedText = Activity?.Text?.GetMessageAttributedString ());
-
 #elif __ANDROID__
 		public float CellHeight { get; set; }
-
-		string _attributedText;
-
-		public string AttributedText => _attributedText ?? (_attributedText = Activity?.Text/*?.GetMessageAttributedString ()*/);
 #endif
+
+		AttributedString _attributedText;
+
+		public AttributedString AttributedText => _attributedText ?? (_attributedText = Activity?.Text?.GetMessageAttributedString ());
+
 
 		public bool Head { get; set; }
 
