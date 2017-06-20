@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using AVFoundation;
 using CoreGraphics;
 using Foundation;
 using ObjCRuntime;
 using UIKit;
 
 using SlackHQ;
-using AVFoundation;
-using System.IO;
 
 namespace NomadCode.BotFramework.iOS
 {
@@ -63,11 +63,19 @@ namespace NomadCode.BotFramework.iOS
 			{
 				LeftButton.TintColor = NavigationController.NavigationBar.TintColor;
 				RightButton.TintColor = NavigationController.NavigationBar.TintColor;
+
+				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (UIBarButtonSystemItem.Done, handleDonePressed), false);
 			}
 
 			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.MessageCellReuseId);
 			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.MessageHeaderCellReuseId);
 			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.AutoCompleteReuseId);
+		}
+
+
+		void handleDonePressed (object s, EventArgs e)
+		{
+			DismissViewController (true, null);
 		}
 
 
