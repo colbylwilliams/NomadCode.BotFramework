@@ -4,18 +4,20 @@
 	{
 		public const string OpenUrl = "openUrl";
 
-		public const string Signin = "signin";
-
-		public const string DownloadFile = "downloadFile";
-
-		public const string ShowImage = "showImage";
-
-		public const string PlayVideo = "playVideo";
-
-		public const string PlayAudio = "playAudio";
+		public const string ImBack = "imBack";
 
 		public const string PostBack = "postBack";
 
-		public const string ImBack = "imBack";
+		public const string Call = "call";
+
+		public const string PlayAudio = "playAudio";
+
+		public const string PlayVideo = "playVideo";
+
+		public const string ShowImage = "showImage";
+
+		public const string DownloadFile = "downloadFile";
+
+		public const string Signin = "signin";
 	}
 }

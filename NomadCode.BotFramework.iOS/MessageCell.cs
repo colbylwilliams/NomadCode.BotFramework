@@ -118,6 +118,17 @@ namespace NomadCode.BotFramework.iOS
 
 			foreach (var view in views)
 			{
+				if (view is UIButton button)
+				{
+					var tag = button.Tag;
+
+					Log.Debug ($"############ Removing Button Handler {tag}");
+
+					cardActionDict.Remove (tag);
+
+					button.TouchUpInside -= handleButtonTouchUpInside;
+				}
+
 				ContentStackView.RemoveArrangedSubview (view);
 				view.RemoveFromSuperview ();
 				//TODO: Cleanup actions and view
@@ -197,6 +208,43 @@ namespace NomadCode.BotFramework.iOS
 			foreach (var button in buttons)
 			{
 				ContentStackView.AddArrangedSubview (MessageCellSubviews.GetButton (button.Title));
+			}
+		}
+
+		nint buttonCount = 100;
+		Dictionary<nint, CardAction> cardActionDict = new Dictionary<nint, CardAction> ();
+
+		public void SetButtons (params CardAction [] cardActions)
+		{
+			foreach (var cardAction in cardActions)
+			{
+				buttonCount++;
+
+				Log.Debug ($"############   Adding Button Handler {buttonCount}");
+
+				cardActionDict.Add (buttonCount, cardAction);
+
+				var button = MessageCellSubviews.GetButton (cardAction.Title);
+
+				button.Tag = buttonCount;
+
+				button.TouchUpInside += handleButtonTouchUpInside;
+
+				ContentStackView.AddArrangedSubview (button);
+			}
+		}
+
+
+		void handleButtonTouchUpInside (object sender, EventArgs e)
+		{
+			if (sender is UIButton button)
+			{
+				var tag = button.Tag;
+
+				if (cardActionDict.TryGetValue (tag, out CardAction action))
+				{
+					BotClient.Shared.HandleCardAction (action);
+				}
 			}
 		}
 

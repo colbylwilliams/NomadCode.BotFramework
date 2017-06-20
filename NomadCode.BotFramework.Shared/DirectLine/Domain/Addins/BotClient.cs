@@ -41,6 +41,7 @@ namespace NomadCode.BotFramework
 		DirectLineClient directLineClient => _directLineClient ?? (!string.IsNullOrEmpty (conversation?.Token) ? _directLineClient = new DirectLineClient (conversation.Token) : throw new Exception ("must set initial client token"));
 
 
+		public event EventHandler<string> ForceSendMessage;
 		public event EventHandler<string> UserTypingMessageReceived;
 		public event EventHandler<SocketStateChangedEventArgs> ReadyStateChanged;
 		public event NotifyCollectionChangedEventHandler MessagesCollectionChanged;
@@ -72,7 +73,7 @@ namespace NomadCode.BotFramework
 #if __ANDROID__
 			get => _ocketState;
 #elif __IOS__
-            get => webSocket != null ? (SocketStates)webSocket.ReadyState : _ocketState;
+			get => webSocket != null ? (SocketStates)webSocket.ReadyState : _ocketState;
 #endif
 			set
 			{
@@ -173,19 +174,19 @@ namespace NomadCode.BotFramework
 
 						webSocket = httpClient.NewWebSocket (new Request.Builder ().Url (conversation.StreamUrl).Build (), this);
 #else
-                        webSocket = new WebSocket (new NSUrl (conversation.StreamUrl));
+						webSocket = new WebSocket (new NSUrl (conversation.StreamUrl));
 
-                        webSocket.ReceivedMessage += handleWebSocketReceivedMessage;
+						webSocket.ReceivedMessage += handleWebSocketReceivedMessage;
 
-                        webSocket.WebSocketClosed += handleWebSocketClosed;
+						webSocket.WebSocketClosed += handleWebSocketClosed;
 
-                        webSocket.WebSocketFailed += handleWebSocketFailed;
+						webSocket.WebSocketFailed += handleWebSocketFailed;
 
-                        webSocket.WebSocketOpened += handleWebSocketOpened;
+						webSocket.WebSocketOpened += handleWebSocketOpened;
 
-                        webSocket.ReceivedPong += handleWebSocketReceivedPong;
+						webSocket.ReceivedPong += handleWebSocketReceivedPong;
 
-                        webSocket.Open ();
+						webSocket.Open ();
 #endif
 					}
 				}
@@ -322,33 +323,61 @@ namespace NomadCode.BotFramework
 
 							var newMessage = new BotMessage (activity);
 
-							var message = Messages.FirstOrDefault (m => m.Equals (newMessage));
+							const string strongOpen = "<strong>";
+							const string strongClose = "</strong>";
+							const string userTyping = "User is typing...";
+							const string strongReplace = "**";
 
-							if (message != null)
+							// LITWARE: replace "<strong>text</strong>" with markdown: "**text**" per link below
+							// https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-create-messages
+							if (newMessage.HasText && newMessage.Activity.Text.Contains (strongOpen))
 							{
-								//Log.Debug ($"Updating Existing Message: {activity.TextFormat} :: {activity.Text}");
-
-								message.Update (activity);
-
-								if (changedEvents)
-								{
-									Messages.Sort ((x, y) => y.CompareTo (x));
-
-									var index = Messages.IndexOf (message);
-
-									MessagesCollectionChanged?.Invoke (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Replace, message, message, index));
-								}
-							}
-							else
-							{
-								Messages.Insert (0, newMessage);
-
-								if (changedEvents)
-								{
-									MessagesCollectionChanged?.Invoke (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, message));
-								}
+								newMessage.Activity.Text = newMessage.Activity.Text.Replace (strongOpen, strongReplace);
+								newMessage.Activity.Text = newMessage.Activity.Text.Replace (strongClose, strongReplace);
 							}
 
+							if (newMessage.HasAtachments)
+							{
+								foreach (var attachment in newMessage.Attachments)
+								{
+									if (attachment.Content.HasText && attachment.Content.Text.Contains (strongOpen))
+									{
+										attachment.Content.Text = attachment.Content.Text.Replace (strongOpen, strongReplace);
+										attachment.Content.Text = attachment.Content.Text.Replace (strongClose, strongReplace);
+									}
+								}
+							}
+
+							// LITWARE: ignore bs messages returned by the litware bot
+							if (!(newMessage.HasText && string.Compare (newMessage.Activity.Text, userTyping, true) == 0))
+							{
+								var message = Messages.FirstOrDefault (m => m.Equals (newMessage));
+
+								if (message != null)
+								{
+									//Log.Debug ($"Updating Existing Message: {activity.TextFormat} :: {activity.Text}");
+
+									message.Update (activity);
+
+									if (changedEvents)
+									{
+										Messages.Sort ((x, y) => y.CompareTo (x));
+
+										var index = Messages.IndexOf (message);
+
+										MessagesCollectionChanged?.Invoke (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Replace, message, message, index));
+									}
+								}
+								else
+								{
+									Messages.Insert (0, newMessage);
+
+									if (changedEvents)
+									{
+										MessagesCollectionChanged?.Invoke (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, message));
+									}
+								}
+							}
 							break;
 						case ActivityTypes.ContactRelationUpdate:
 							break;
@@ -373,6 +402,47 @@ namespace NomadCode.BotFramework
 			}
 		}
 
+
+		public void HandleCardAction (CardAction action)
+		{
+			if (!string.IsNullOrEmpty (action?.Type))
+			{
+				switch (action.Type)
+				{
+					case ActionTypes.OpenUrl:
+
+						break;
+					case ActionTypes.ImBack:
+
+						ForceSendMessage?.Invoke (this, action.Value);
+
+						break;
+					case ActionTypes.PostBack:
+
+						break;
+					case ActionTypes.Call:
+
+						break;
+					case ActionTypes.PlayAudio:
+
+						break;
+					case ActionTypes.PlayVideo:
+
+						break;
+					case ActionTypes.ShowImage:
+
+						break;
+					case ActionTypes.DownloadFile:
+
+						break;
+					case ActionTypes.Signin:
+
+						break;
+					default:
+						break;
+				}
+			}
+		}
 
 		public bool SendMessage (string text)
 		{
@@ -534,32 +604,32 @@ namespace NomadCode.BotFramework
 
 #elif __IOS__
 
-        void setSocketState (SocketStates state) => SocketState = webSocket != null ? (SocketStates)webSocket.ReadyState : state;
+		void setSocketState (SocketStates state) => SocketState = webSocket != null ? (SocketStates)webSocket.ReadyState : state;
 
-        void handleWebSocketOpened (object sender, EventArgs e)
-        {
-            handleOpen ();
-        }
+		void handleWebSocketOpened (object sender, EventArgs e)
+		{
+			handleOpen ();
+		}
 
-        void handleWebSocketReceivedMessage (object sender, WebSocketReceivedMessageEventArgs e)
-        {
-            handleMessage (e.Message.ToString ());
-        }
+		void handleWebSocketReceivedMessage (object sender, WebSocketReceivedMessageEventArgs e)
+		{
+			handleMessage (e.Message.ToString ());
+		}
 
-        void handleWebSocketClosed (object sender, WebSocketClosedEventArgs e)
-        {
-            handleClosed ((int)e.Code, e.Reason);
-        }
+		void handleWebSocketClosed (object sender, WebSocketClosedEventArgs e)
+		{
+			handleClosed ((int)e.Code, e.Reason);
+		}
 
-        void handleWebSocketFailed (object sender, WebSocketFailedEventArgs e)
-        {
-            handleFailure (e.Error?.LocalizedDescription, (int?)e.Error?.Code, e.Error?.ToString ());
-        }
+		void handleWebSocketFailed (object sender, WebSocketFailedEventArgs e)
+		{
+			handleFailure (e.Error?.LocalizedDescription, (int?)e.Error?.Code, e.Error?.ToString ());
+		}
 
-        void handleWebSocketReceivedPong (object sender, WebSocketReceivedPongEventArgs e)
-        {
-            Log.Info ($"[Socket Received Pong] {Environment.NewLine}");
-        }
+		void handleWebSocketReceivedPong (object sender, WebSocketReceivedPongEventArgs e)
+		{
+			Log.Info ($"[Socket Received Pong] {Environment.NewLine}");
+		}
 
 #endif
 

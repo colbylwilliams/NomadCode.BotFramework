@@ -10,6 +10,7 @@ using ObjCRuntime;
 using UIKit;
 
 using SlackHQ;
+using AVFoundation;
 
 namespace NomadCode.BotFramework.iOS
 {
@@ -20,7 +21,7 @@ namespace NomadCode.BotFramework.iOS
 	}
 
 	[Register ("BotViewController")]
-	public class BotViewController : SlackTextViewController
+	public class BotViewController : SlackTextViewController, IUIImagePickerControllerDelegate
 	{
 		UIWindow pipWindow;
 
@@ -55,6 +56,14 @@ namespace NomadCode.BotFramework.iOS
 
 			TableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
 
+			LeftButton.SetImage (UIImage.FromBundle ("i_image"), UIControlState.Normal);
+
+			if (NavigationController?.NavigationBar != null)
+			{
+				LeftButton.TintColor = NavigationController.NavigationBar.TintColor;
+				RightButton.TintColor = NavigationController.NavigationBar.TintColor;
+			}
+
 			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.MessageCellReuseId);
 			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.MessageHeaderCellReuseId);
 			TableView.RegisterClassForCellReuse (typeof (MessageCell), MessageCell.AutoCompleteReuseId);
@@ -68,6 +77,7 @@ namespace NomadCode.BotFramework.iOS
 			BotClient.Shared.ReadyStateChanged += handleBotClientReadyStateChanged;
 			BotClient.Shared.MessagesCollectionChanged += handleBotClientMessagesChanged;
 			BotClient.Shared.UserTypingMessageReceived += handleBotClientUserTypingMessageReceived;
+			BotClient.Shared.ForceSendMessage += handleBotClientForceSendMessage;
 		}
 
 
@@ -76,6 +86,7 @@ namespace NomadCode.BotFramework.iOS
 			BotClient.Shared.ReadyStateChanged -= handleBotClientReadyStateChanged;
 			BotClient.Shared.MessagesCollectionChanged -= handleBotClientMessagesChanged;
 			BotClient.Shared.UserTypingMessageReceived -= handleBotClientUserTypingMessageReceived;
+			BotClient.Shared.ForceSendMessage -= handleBotClientForceSendMessage;
 
 			base.ViewDidDisappear (animated);
 		}
@@ -173,6 +184,18 @@ namespace NomadCode.BotFramework.iOS
 
 
 		// Notifies the view controller when the right button's action has been triggered, 
+		//   manually
+		public override void DidPressLeftButton (NSObject sender)
+		{
+			//base.DidPressLeftButton (sender);
+
+			Log.Debug ("Left Button Pressed");
+
+			showUploadActionSheet ();
+		}
+
+
+		// Notifies the view controller when the right button's action has been triggered, 
 		//   manually or by using the keyboard return key.
 		public override void DidPressRightButton (NSObject sender)
 		{
@@ -257,6 +280,18 @@ namespace NomadCode.BotFramework.iOS
 
 		#region BotClient Event Handlers
 
+		void handleBotClientForceSendMessage (object sender, string e)
+		{
+			Log.Debug ($"Force sending message: {e}");
+
+			BeginInvokeOnMainThread (() =>
+			{
+				TextView.Text = e;
+				addNewMessage ();
+				TextView.Text = string.Empty;
+			});
+		}
+
 		void handleBotClientMessagesChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			Log.Debug ($"{e.Action}");
@@ -318,5 +353,99 @@ namespace NomadCode.BotFramework.iOS
 		}
 
 		#endregion
+
+
+		#region Upload Image
+
+		void showUploadActionSheet ()
+		{
+			var actionController = UIAlertController.Create ("Upload Image", null, UIAlertControllerStyle.ActionSheet);
+
+			if (UIImagePickerController.IsSourceTypeAvailable (UIImagePickerControllerSourceType.Camera))
+			{
+				actionController.AddAction (UIAlertAction.Create ("Camera", UIAlertActionStyle.Default, handleUploadCameraAction));
+			}
+
+			actionController.AddAction (UIAlertAction.Create ("Photo Library", UIAlertActionStyle.Default, handleUploadPhotoLibraryAction));
+			actionController.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+
+			PresentViewController (actionController, true, null);
+		}
+
+		void handleUploadCameraAction (UIAlertAction obj) => showImagePickerForCamera ();
+
+		void handleUploadPhotoLibraryAction (UIAlertAction obj) => showImagePicker (UIImagePickerControllerSourceType.PhotoLibrary);
+
+
+		void showImagePickerForCamera ()
+		{
+			// Denies access to camera, alert the user.
+			// The user has previously denied access. Remind the user that we need camera access to be useful.
+			var authStatus = AVCaptureDevice.GetAuthorizationStatus (AVMediaType.Video);
+
+			if (authStatus == AVAuthorizationStatus.Denied)
+			{
+				var alert = UIAlertController.Create ("Unable to access the Camera", "To enable access, go to Settings > Privacy > Camera and turn on Camera access for this app.", UIAlertControllerStyle.Alert);
+
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+
+				PresentViewController (alert, true, null);
+			}
+			else if (authStatus == AVAuthorizationStatus.NotDetermined)
+			{
+				// The user has not yet been presented with the option to grant access to the camera hardware.
+				// Ask for it.
+				AVCaptureDevice.RequestAccessForMediaType (AVMediaType.Video, (accessGranted) =>
+				{
+					// If access was denied, we do not set the setup error message since access was just denied.
+					if (accessGranted)
+					{
+						// Allowed access to camera, go ahead and present the UIImagePickerController.
+						showImagePicker (UIImagePickerControllerSourceType.Camera);
+					}
+				});
+			}
+			else
+			{
+				// Allowed access to camera, go ahead and present the UIImagePickerController.
+				showImagePicker (UIImagePickerControllerSourceType.Camera);
+			}
+		}
+
+		void showImagePicker (UIImagePickerControllerSourceType sourceType)
+		{
+			var imagePicker = new UIImagePickerController
+			{
+				Delegate = this,
+				SourceType = sourceType
+			};
+
+			PresentViewController (imagePicker, true, null);
+		}
+
+
+		[Export ("imagePickerController:didFinishPickingMediaWithInfo:")]
+		public void FinishedPickingMedia (UIImagePickerController picker, NSDictionary info)
+		{
+			DismissViewController (true, null);
+
+			if (info.TryGetValue (UIImagePickerController.OriginalImage, out NSObject nsObject) && nsObject is UIImage image)
+			{
+				Log.Debug ("Got Image!");
+			}
+			else
+			{
+				Log.Debug ("Damnit!");
+			}
+		}
+
+		[Export ("imagePickerControllerDidCancel:")]
+		public void Canceled (UIImagePickerController picker)
+		{
+			DismissViewController (true, null);
+		}
+
+		#endregion
+
 	}
 }

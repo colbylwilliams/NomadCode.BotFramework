@@ -70,7 +70,8 @@ namespace NomadCode.BotFramework.iOS
 						// buttons
 						if (attachment.Content.HasButtons)
 						{
-							cell.SetButtons (attachment.Content.Buttons.Select (b => (b.Title, b.Value.ToString ())).ToArray ());
+							//cell.SetButtons (attachment.Content.Buttons.Select (b => (b.Title, b.Value.ToString ())).ToArray ());
+							cell.SetButtons (attachment.Content.Buttons.ToArray ());
 						}
 					}
 				}
