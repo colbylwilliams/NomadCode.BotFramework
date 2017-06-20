@@ -92,5 +92,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\Interfaces\ITypingActivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\BotClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\BotMessageExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectLine\Domain\Addins\LitwareChannelData.cs" />
   </ItemGroup>
 </Project>

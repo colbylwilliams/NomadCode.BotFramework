@@ -24,7 +24,7 @@ namespace NomadCode.BotFramework
 	public class BotMessage : IComparable<BotMessage>, IEquatable<BotMessage>
 	{
 #if __IOS__
-        public nfloat CellHeight { get; set; }
+		public nfloat CellHeight { get; set; }
 #elif __ANDROID__
 		public float CellHeight { get; set; }
 #endif
@@ -58,6 +58,8 @@ namespace NomadCode.BotFramework
 		public List<BotMessageAttachemnt> Attachments => _attachments ?? (_attachments = Activity?.Attachments?.Select (a => new BotMessageAttachemnt (a, a.GetContent ())).ToList () ?? new List<BotMessageAttachemnt> ());
 
 
+		public LitwareChannelData LitwareChannelData => Activity.LitwareChannelData;
+
 		//public int ButtonCount
 
 		//public bool HasButtons => Activity.Attachments.
@@ -75,6 +77,10 @@ namespace NomadCode.BotFramework
 			{
 				return Activity.Id.CompareTo (other.Activity.Id);
 			}
+			//else if (!string.IsNullOrEmpty(Activity))
+			//{
+
+			//}
 
 			return string.IsNullOrEmpty (Activity?.Id) ? 1 : -1;
 		}

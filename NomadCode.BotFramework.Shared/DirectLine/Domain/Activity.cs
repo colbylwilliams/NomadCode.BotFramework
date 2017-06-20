@@ -223,8 +223,11 @@ namespace NomadCode.BotFramework
 		/// <summary>
 		/// Gets or sets channel specific payload
 		/// </summary>
-		[JsonProperty (PropertyName = "channelData")]
+		//[JsonProperty (PropertyName = "channelData")]
 		public object ChannelData { get; set; }
+
+		[JsonProperty (PropertyName = "channelData")]
+		public LitwareChannelData LitwareChannelData { get; set; }
 
 		/// <summary>
 		/// Gets or sets contactAdded/Removed action

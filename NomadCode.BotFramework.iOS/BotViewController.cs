@@ -11,6 +11,7 @@ using UIKit;
 
 using SlackHQ;
 using AVFoundation;
+using System.IO;
 
 namespace NomadCode.BotFramework.iOS
 {
@@ -429,9 +430,25 @@ namespace NomadCode.BotFramework.iOS
 		{
 			DismissViewController (true, null);
 
-			if (info.TryGetValue (UIImagePickerController.OriginalImage, out NSObject nsObject) && nsObject is UIImage image)
+			if (info.TryGetValue (UIImagePickerController.OriginalImage, out NSObject nsObject) && nsObject is UIImage image //&&
+																															 /*info.TryGetValue (UIImagePickerController.ReferenceUrl, out NSObject nsReferenceUrl) && nsReferenceUrl is NSUrl referenceUrl*/)
 			{
 				Log.Debug ("Got Image!");
+
+				Task.Run (async () =>
+				{
+					using (var stream = image.AsJPEG ().AsStream ())
+					{
+						if (await BotClient.Shared.SendUploadAsync (stream))
+						{
+							Log.Debug ("Image Upload Successful.");
+						}
+						else
+						{
+							Log.Debug ("Image Upload Failed.");
+						}
+					}
+				});
 			}
 			else
 			{

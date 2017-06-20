@@ -12,36 +12,36 @@ using Android.Preferences;
 
 namespace NomadCode.BotFramework
 {
-    public partial class BotClient // preference store
-    {
+	public partial class BotClient // preference store
+	{
 
-        const string hyphen = "-";
+		const string hyphen = "-";
 
-        const string currentUserIdStorageKey = "NomadCodeBotFrameworkCurrentUserIdStorageKey";
+		const string currentUserIdStorageKey = "NomadCodeBotFrameworkCurrentUserIdStorageKey";
 
-        const string currentUserNameStorageKey = "NomadCodeBotFrameworkCurrentUserNameStorageKey";
+		const string currentUserNameStorageKey = "NomadCodeBotFrameworkCurrentUserNameStorageKey";
 
-        const string currentUserEmailStorageKey = "NomadCodeBotFrameworkCurrentUserEmailStorageKey";
+		const string currentUserEmailStorageKey = "NomadCodeBotFrameworkCurrentUserEmailStorageKey";
 
-        const string currentUserAvatarStorageKey = "NomadCodeBotFrameworkCurrentUserAvatarStorageKey";
+		const string currentUserAvatarStorageKey = "NomadCodeBotFrameworkCurrentUserAvatarStorageKey";
 
-        const string conversationIdStorageKey = "NomadCodeBotFrameworkConversationIdStorageKey";
+		const string conversationIdStorageKey = "NomadCodeBotFrameworkConversationIdStorageKey";
 
-        const string resetConversationStorageKey = "NomadCodeBotFrameworkResetConversationStorageKey";
+		const string resetConversationStorageKey = "NomadCodeBotFrameworkResetConversationStorageKey";
 
 
 #if __IOS__
 
-        void setSetting (string key, bool value) => StandardUserDefaults.SetBool (value, key);
+		void setSetting (string key, bool value) => StandardUserDefaults.SetBool (value, key);
 
-        void setSetting (string key, string value) => StandardUserDefaults.SetString (value, key);
+		void setSetting (string key, string value) => StandardUserDefaults.SetString (value, key);
 
-        void setSetting (string key, DateTime value) => setSetting (key, value.ToString ());
+		void setSetting (string key, DateTime value) => setSetting (key, value.ToString ());
 
 
-        bool boolForKey (string key) => StandardUserDefaults.BoolForKey (key);
+		bool boolForKey (string key) => StandardUserDefaults.BoolForKey (key);
 
-        string stringForKey (string key) => StandardUserDefaults.StringForKey (key);
+		string stringForKey (string key) => StandardUserDefaults.StringForKey (key);
 
 
 #elif __ANDROID__
@@ -91,64 +91,79 @@ namespace NomadCode.BotFramework
 
 #endif
 
-        DateTime dateTimeForKey (string key) => DateTime.TryParse (stringForKey (key), out DateTime outDateTime) ? outDateTime : default (DateTime);
+		DateTime dateTimeForKey (string key) => DateTime.TryParse (stringForKey (key), out DateTime outDateTime) ? outDateTime : default (DateTime);
 
-        public static Dictionary<string, string> UserImageDictionary { get; set; }
+		public static Dictionary<string, string> UserImageDictionary { get; set; }
 
-        public void ResetCurrentUser ()
-        {
-            CurrentUserId = string.Empty;
-            CurrentUserName = string.Empty;
-            CurrentUserEmail = string.Empty;
-        }
+		public void ResetCurrentUser ()
+		{
+			CurrentUserId = DefaultUserId ?? string.Empty;
+			CurrentUserName = DefaultUserName ?? string.Empty;
+			CurrentUserEmail = string.Empty;
+		}
 
-        public string CurrentUserId
-        {
-            get => stringForKey (currentUserIdStorageKey);
-            set => setSetting (currentUserIdStorageKey, value ?? string.Empty);
-        }
+		public string DefaultUserId { get; set; } = "userId";
 
-        public string CurrentUserName
-        {
-            get => stringForKey (currentUserNameStorageKey);
-            set => setSetting (currentUserNameStorageKey, value ?? string.Empty);
-        }
-
-        public string CurrentUserEmail
-        {
-            get => stringForKey (currentUserEmailStorageKey);
-            set => setSetting (currentUserEmailStorageKey, value ?? string.Empty);
-        }
-
-        public string GetAvatarUrl (string sid) => stringForKey ($"currentUserAvatarStorageKey{sid}");
-
-        public void SetAvatarUrl (string sid, string url) => setSetting ($"currentUserAvatarStorageKey{sid}", url ?? string.Empty);
-
-        public string ConversationId
-        {
-            get => stringForKey (conversationIdStorageKey);
-            set => setSetting (conversationIdStorageKey, value ?? string.Empty);
-        }
-
-        public bool ResetConversation
-        {
-            get
-            {
-                var reset = boolForKey (resetConversationStorageKey);
-
-                if (reset) // only return true once
-                {
-                    setSetting (resetConversationStorageKey, false);
-                }
-
-                return reset;
-            }
-            set => setSetting (resetConversationStorageKey, value);
-        }
+		public string DefaultUserName { get; set; } = "User";
 
 
-        public bool HasValidCurrentUser => !(string.IsNullOrWhiteSpace (CurrentUserId) || string.IsNullOrWhiteSpace (CurrentUserName));
-    }
+		public string CurrentUserId
+		{
+			get
+			{
+				var id = stringForKey (currentUserIdStorageKey);
+
+				return string.IsNullOrEmpty (id) ? DefaultUserId : id;
+			}
+			set => setSetting (currentUserIdStorageKey, value ?? DefaultUserId ?? string.Empty);
+		}
+
+		public string CurrentUserName
+		{
+			get
+			{
+				var name = stringForKey (currentUserNameStorageKey);
+
+				return string.IsNullOrEmpty (name) ? DefaultUserName : name;
+			}
+			set => setSetting (currentUserNameStorageKey, value ?? DefaultUserName ?? string.Empty);
+		}
+
+		public string CurrentUserEmail
+		{
+			get => stringForKey (currentUserEmailStorageKey);
+			set => setSetting (currentUserEmailStorageKey, value ?? string.Empty);
+		}
+
+		public string GetAvatarUrl (string sid) => stringForKey ($"currentUserAvatarStorageKey{sid.Replace (' ', '_')}");
+
+		public void SetAvatarUrl (string sid, string url) => setSetting ($"currentUserAvatarStorageKey{sid.Replace (' ', '_')}", url ?? string.Empty);
+
+		public string ConversationId
+		{
+			get => stringForKey (conversationIdStorageKey);
+			set => setSetting (conversationIdStorageKey, value ?? string.Empty);
+		}
+
+		public bool ResetConversation
+		{
+			get
+			{
+				var reset = boolForKey (resetConversationStorageKey);
+
+				if (reset) // only return true once
+				{
+					setSetting (resetConversationStorageKey, false);
+				}
+
+				return reset;
+			}
+			set => setSetting (resetConversationStorageKey, value);
+		}
+
+
+		public bool HasValidCurrentUser => !(string.IsNullOrWhiteSpace (CurrentUserId) || string.IsNullOrWhiteSpace (CurrentUserName));
+	}
 }
 
 #endif

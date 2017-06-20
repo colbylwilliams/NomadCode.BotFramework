@@ -196,5 +196,12 @@ namespace NomadCode.BotFramework
 			}
 		}
 
+		public static async Task<ResourceResponse> UploadLitwareAsync (this IConversations operations, string conversationId, Stream file, string userId, Activity activity, CancellationToken cancellationToken = default (CancellationToken))
+		{
+			using (var _result = await operations.UploadWithHttpMessagesLitwareAsync (conversationId, file, userId, activity, null, cancellationToken).ConfigureAwait (false))
+			{
+				return _result.Body;
+			}
+		}
 	}
 }

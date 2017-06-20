@@ -26,11 +26,11 @@ namespace NomadCode.BotFramework.iOS
 		public static readonly CGSize AvatarImageSize = new CGSize (24, (AvatarRatio.Height / AvatarRatio.Width) * 24);
 		public static readonly CGSize AvatarScaledImageSize = new CGSize (AvatarImageSize.Width * UIScreen.MainScreen.Scale, AvatarImageSize.Height * UIScreen.MainScreen.Scale);
 
-		public static readonly CGSize HeroRatio = new CGSize (5, 4);
+		public static readonly CGSize HeroRatio = new CGSize (6, 4);
 		public static readonly CGSize HeroImageSize = new CGSize (ContentWidth, (HeroRatio.Height / HeroRatio.Width) * ContentWidth);
 		public static readonly CGSize HeroScaledImageSize = new CGSize (HeroImageSize.Width * UIScreen.MainScreen.Scale, HeroImageSize.Height * UIScreen.MainScreen.Scale);
 
-		public static readonly CGSize ThumbnailRatio = new CGSize (5, 4);
+		public static readonly CGSize ThumbnailRatio = new CGSize (6, 4);
 		public static readonly CGSize ThumbnailImageSize = new CGSize (ContentWidth, (ThumbnailRatio.Height / ThumbnailRatio.Width) * ContentWidth);
 		public static readonly CGSize ThumbnailScaledImageSize = new CGSize (ThumbnailImageSize.Width * UIScreen.MainScreen.Scale, ThumbnailImageSize.Height * UIScreen.MainScreen.Scale);
 

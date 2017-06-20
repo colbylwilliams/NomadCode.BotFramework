@@ -23,6 +23,7 @@ using Square.SocketRocket;
 
 using WebSocket = Square.SocketRocket.WebSocket;
 using Newtonsoft.Json.Linq;
+using System.IO;
 #endif
 
 
@@ -298,16 +299,16 @@ namespace NomadCode.BotFramework
 				return;
 			}
 
-			Log.Info ($"[Socket Message Received] \n{message}");
+			//Log.Info ($"[Socket Message Received] \n{message}");
 
 			var activitySet = JsonConvert.DeserializeObject<ActivitySet> (message);
 
-			handleNewActvitySet (activitySet);
+			handleNewActvitySet (activitySet, true, message);
 		}
 
 		#endregion
 
-		void handleNewActvitySet (ActivitySet activitySet, bool changedEvents = true)
+		void handleNewActvitySet (ActivitySet activitySet, bool changedEvents = true, string json = null)
 		{
 			//var watermark = activitySet?.Watermark;
 
@@ -327,11 +328,13 @@ namespace NomadCode.BotFramework
 							const string strongClose = "</strong>";
 							const string userTyping = "User is typing...";
 							const string strongReplace = "**";
+							const string randomSpace = "\n                  ";
 
 							// LITWARE: replace "<strong>text</strong>" with markdown: "**text**" per link below
 							// https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-create-messages
 							if (newMessage.HasText && newMessage.Activity.Text.Contains (strongOpen))
 							{
+								newMessage.Activity.Text = newMessage.Activity.Text.Replace (randomSpace, " ");
 								newMessage.Activity.Text = newMessage.Activity.Text.Replace (strongOpen, strongReplace);
 								newMessage.Activity.Text = newMessage.Activity.Text.Replace (strongClose, strongReplace);
 							}
@@ -348,9 +351,21 @@ namespace NomadCode.BotFramework
 								}
 							}
 
+							if (string.Compare (CurrentUserName, DefaultUserName, true) == 0 && !string.IsNullOrEmpty (newMessage.LitwareChannelData?.AccountId))
+							{
+								CurrentUserId = newMessage.LitwareChannelData.Username;
+								CurrentUserName = newMessage.LitwareChannelData.Username;
+								SetAvatarUrl (CurrentUserId, $"https://cisbot-prod.azurewebsites.net/api/opportunity/images/account?id={newMessage.LitwareChannelData.AccountId}");
+								// https://cisbot-prod.azurewebsites.net/api/opportunity/images/account?id=
+								// https://cisbot-prod.azurewebsites.net/assets/images/chat_person_120x120.png
+							}
+
 							// LITWARE: ignore bs messages returned by the litware bot
 							if (!(newMessage.HasText && string.Compare (newMessage.Activity.Text, userTyping, true) == 0))
 							{
+								if (!string.IsNullOrEmpty (json))
+									Log.Debug ($"[Socket Message Received]\nMessage:\n{json}");
+
 								var message = Messages.FirstOrDefault (m => m.Equals (newMessage));
 
 								if (message != null)
@@ -378,12 +393,29 @@ namespace NomadCode.BotFramework
 									}
 								}
 							}
+							else
+							{
+								if (!string.IsNullOrEmpty (json))
+									Log.Debug ($"[Socket Message Received] Message: Litware junk");
+							}
 							break;
 						case ActivityTypes.ContactRelationUpdate:
+
+							if (!string.IsNullOrEmpty (json))
+								Log.Debug ($"[Socket Message Received]\nContactRelationUpdate:\n{json}");
+
 							break;
 						case ActivityTypes.ConversationUpdate:
+
+							if (!string.IsNullOrEmpty (json))
+								Log.Debug ($"[Socket Message Received]\nConversationUpdate:\n{json}");
+
 							break;
 						case ActivityTypes.Typing:
+
+							if (!string.IsNullOrEmpty (json))
+								Log.Debug ($"[Socket Message Received] Typing");
+							//Log.Debug ($"[Socket Message Received]\nTyping:\n{json}");
 
 							if (activity?.From.Id != CurrentUserId && !string.IsNullOrEmpty (activity?.From?.Name))
 							{
@@ -392,10 +424,22 @@ namespace NomadCode.BotFramework
 
 							break;
 						case ActivityTypes.Ping:
+
+							if (!string.IsNullOrEmpty (json))
+								Log.Debug ($"[Socket Message Received]\nPing:\n{json}");
+
 							break;
 						case ActivityTypes.EndOfConversation:
+
+							if (!string.IsNullOrEmpty (json))
+								Log.Debug ($"[Socket Message Received]\nEndOfConversation:\n{json}");
+
 							break;
 						case ActivityTypes.Trigger:
+
+							if (!string.IsNullOrEmpty (json))
+								Log.Debug ($"[Socket Message Received]\nTrigger:\n{json}");
+
 							break;
 					}
 				}
@@ -444,6 +488,7 @@ namespace NomadCode.BotFramework
 			}
 		}
 
+
 		public bool SendMessage (string text)
 		{
 			var activity = new Activity
@@ -488,7 +533,8 @@ namespace NomadCode.BotFramework
 					Type = ActivityTypes.Typing
 				};
 
-				postActivityAsync (activity, true);
+				//postActivityAsync (activity, true);
+				Log.Debug ("Not sending Typing Activity");
 			}
 		}
 
@@ -556,6 +602,77 @@ namespace NomadCode.BotFramework
 
 			return true;
 		}
+
+
+		public async Task<bool> SendUploadAsync (Stream stream)
+		{
+			if (conversation == null)
+			{
+				throw new ArgumentNullException (nameof (conversation), "cannot be null to send message");
+			}
+
+			if (!Initialized)
+			{
+				Log.Error ("client is not properly initialized");
+
+				return false;
+				//throw new Exception ("client is not properly initialized");
+			}
+
+			var activity = new Activity
+			{
+				From = currentUser,
+				Text = " ",
+				Type = ActivityTypes.Message,
+				LocalTimestamp = DateTimeOffset.Now,
+				Timestamp = DateTime.UtcNow,
+				ReplyToId = Messages.FirstOrDefault (m => m.Activity.From.Id != currentUser.Id)?.Activity.Id
+			};
+
+			//ForceSendMessage?.Invoke (this, "Image");
+
+			try
+			{
+				if (attemptingReconnect)
+				{
+					Log.Debug ($"attemptingReconnect == {attemptingReconnect} - returning");
+					return false;
+				}
+
+				ResourceResponse resourceResponse = await directLineClient.Conversations.UploadLitwareAsync (conversation.ConversationId, stream, currentUser.Id, activity);
+
+
+				attemptingReconnect = false;
+			}
+			catch (HttpOperationException httpEx)
+			{
+				Log.Error (httpEx.Message);
+
+				if (httpEx.Response.StatusCode == HttpStatusCode.Forbidden && !attemptingReconnect)
+				{
+					Log.Debug ($"attemptingReconnect == {attemptingReconnect}");
+
+					attemptingReconnect = true;
+
+					await ResetWebsocketAsync ();
+
+					await directLineClient.Conversations.UploadLitwareAsync (conversation.ConversationId, stream, currentUser.Id, activity);
+
+					attemptingReconnect = false;
+				}
+
+				else throw;
+			}
+			catch (Exception ex)
+			{
+				Log.Error (ex.Message);
+				throw;
+
+			}
+
+			return true;
+		}
+
 
 
 		public void SendPing ()

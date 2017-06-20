@@ -15,5 +15,7 @@
 		public const string Signin = @"application/vnd.microsoft.card.signin";
 
 		public const string Video = @"application/vnd.microsoft.card.video";
+
+		public const string ImageJpeg = @"image/jpeg";
 	}
 }

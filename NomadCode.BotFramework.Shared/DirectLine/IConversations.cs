@@ -128,5 +128,7 @@ namespace NomadCode.BotFramework
 		/// Thrown when a required parameter is null
 		/// </exception>
 		Task<HttpOperationResponse<ResourceResponse>> UploadWithHttpMessagesAsync (string conversationId, Stream file, string userId = default (string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default (CancellationToken));
+
+		Task<HttpOperationResponse<ResourceResponse>> UploadWithHttpMessagesLitwareAsync (string conversationId, Stream file, string userId, Activity activity, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default (CancellationToken));
 	}
 }

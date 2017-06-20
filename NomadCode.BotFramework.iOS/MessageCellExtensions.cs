@@ -40,13 +40,19 @@ namespace NomadCode.BotFramework.iOS
 				{
 					foreach (var attachment in message.Attachments)
 					{
-						// images
+						// card images
 						if (attachment.Content.HasImages)
 						{
 							foreach (var image in attachment.Content.Images)
 							{
 								cell.AddHeroImage (indexPath, image.Url);
 							}
+						}
+
+						// raw attachment images
+						if (attachment.Attachment.ContentType == CardContentTypes.ImageJpeg)
+						{
+							cell.AddHeroImage (indexPath, attachment.Attachment.ContentUrl);
 						}
 
 						// title
@@ -143,36 +149,40 @@ namespace NomadCode.BotFramework.iOS
 
 		static void SetHeader (this MessageCell cell, NSIndexPath indexPath, BotMessage message)
 		{
-			cell.SetHeader (message.LocalTimeStamp, message.Activity?.From?.Name);
+			var username = message.Activity?.From?.Name ?? (string.Compare (message.Activity?.From?.Id, BotClient.Shared.CurrentUserId, true) == 0 ? BotClient.Shared.CurrentUserName : "  ");
+
+			if (string.Compare (username, "cisbot-prod-svc", true) == 0)
+			{
+				username = "Litware Bot";
+			}
+
+			cell.SetHeader (message.LocalTimeStamp, username);
 
 			cell.ImageView.SetCacheFormat (getCacheFormat (MessageCell.AvatarImageSize));
 
-			if (message.Activity.From.Id == "DigitalAgencies")
+			var avatarUrl = string.IsNullOrEmpty (message.Activity?.From?.Id) ? string.Empty : BotClient.Shared.GetAvatarUrl (message.Activity.From.Id);
+
+			if (string.IsNullOrEmpty (avatarUrl))
 			{
-				cell.SetAvatar (indexPath.Row, UIImage.FromBundle ("avatar_microsoft"));
+				cell.SetAvatar (indexPath.Row, null);
+			}
+			else if (avatarUrl.Contains ("http"))
+			{
+				var placeholder = getPlaceholderImage (MessageCell.AvatarImageSize);
+
+				using (NSUrl url = new NSUrl (avatarUrl))
+				{
+					cell?.ImageView.SetImage (url, placeholder, (img) => cell.SetAvatar (indexPath.Row, img), (err) =>
+					{
+						cell.SetAvatar (indexPath.Row, null);
+
+						Log.Debug (err.LocalizedDescription);
+					});
+				}
 			}
 			else
 			{
-				var avatarUrl = string.IsNullOrEmpty (message.Activity?.From?.Id) ? string.Empty : BotClient.Shared.GetAvatarUrl (message.Activity.From.Id);
-
-				if (string.IsNullOrEmpty (avatarUrl))
-				{
-					cell.SetAvatar (indexPath.Row, null);
-				}
-				else
-				{
-					var placeholder = getPlaceholderImage (MessageCell.AvatarImageSize);
-
-					using (NSUrl url = new NSUrl (avatarUrl))
-					{
-						cell?.ImageView.SetImage (url, placeholder, (img) => cell.SetAvatar (indexPath.Row, img), (err) =>
-						{
-							cell.SetAvatar (indexPath.Row, null);
-
-							Log.Debug (err.LocalizedDescription);
-						});
-					}
-				}
+				cell.SetAvatar (indexPath.Row, UIImage.FromBundle (avatarUrl));
 			}
 		}
 
@@ -259,10 +269,10 @@ namespace NomadCode.BotFramework.iOS
 
 				nfloat height = message.CellHeight;
 
-				if (height > 0)
-				{
-					return height;
-				}
+				//if (height > 0)
+				//{
+				//	return height;
+				//}
 
 				message.Head = messages.IsHead (row);
 
@@ -279,13 +289,19 @@ namespace NomadCode.BotFramework.iOS
 				{
 					foreach (var attachment in message.Attachments)
 					{
-						// images
+						// card images
 						if (attachment.Content.HasImages)
 						{
 							foreach (var image in attachment.Content.Images)
 							{
 								height += MessageCell.HeroImageSize.Height + MessageCell.StackViewPadding;
 							}
+						}
+
+						// raw attachment images
+						if (attachment.Attachment.ContentType == CardContentTypes.ImageJpeg)
+						{
+							height += MessageCell.HeroImageSize.Height + MessageCell.StackViewPadding;
 						}
 
 						// title
