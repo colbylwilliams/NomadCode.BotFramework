@@ -11,8 +11,8 @@
 		[JsonProperty (PropertyName = "AccountId")]
 		public string AccountId { get; set; }
 
-		[JsonProperty (PropertyName = "Attachments")]
-		public LitwareChannelDataAttachment Attachments { get; set; }
+		//[JsonProperty (PropertyName = "Attachments")]
+		//public LitwareChannelDataAttachment Attachments { get; set; }
 	}
 
 	public class LitwareChannelDataAttachment
