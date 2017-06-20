@@ -97,7 +97,7 @@ namespace NomadCode.BotFramework.iOS
 		{
 			base.ViewWillLayoutSubviews ();
 
-			TableView.ContentInset = new UIEdgeInsets (0, 0, 0, 0);
+			TableView.SetContentOffset (new CGPoint (0, 64), false);
 		}
 
 		#endregion
