@@ -42,14 +42,9 @@ namespace NomadCode.BotFramework.Droid
 
 		void Initialize ()
 		{
-			//Rotation = 180;
+			Rotation = 180;
 
-			LinearLayoutManager llm = new LinearLayoutManager (Context/*, LinearLayoutManager.Vertical, false*/)
-			{
-				Orientation = LinearLayoutManager.Vertical
-			};
-
-			SetLayoutManager (llm);
+			SetLayoutManager (new LinearLayoutManager (Context) { Orientation = LinearLayoutManager.Vertical });
 
 			messagesAdapter = new MessagesAdapter (this);
 

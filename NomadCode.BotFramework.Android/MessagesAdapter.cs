@@ -6,6 +6,7 @@ using Android.Content;
 using Android.App;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
+using Android.Widget;
 
 namespace NomadCode.BotFramework.Droid
 {
@@ -66,15 +67,7 @@ namespace NomadCode.BotFramework.Droid
 
 		#region RecyclerView.Adapter
 
-		public override int ItemCount
-		{
-			get
-			{
-				Log.Debug ($"ItemCount > {Messages.Count}");
-
-				return Messages.Count;
-			}
-		}
+		public override int ItemCount => Messages.Count;
 
 
 		public override void OnBindViewHolder (RecyclerView.ViewHolder holder, int position)
@@ -84,20 +77,18 @@ namespace NomadCode.BotFramework.Droid
 				Messages.SetMessageCell (messageHolder.MessageCell, position);
 			}
 
-			Log.Debug ($"OnBindViewHolder > {position} : {holder}");
+			Log.Debug ($"OnBindViewHolder >> {position} : {holder}");
 		}
 
 
 		public override RecyclerView.ViewHolder OnCreateViewHolder (ViewGroup parent, int viewType)
 		{
-			//var rootView = LayoutInflater.From (parent.Context).Inflate (viewType, parent, false);
+			//var messageCell = new MessageCell (parent.Context, viewType, new RecyclerView.LayoutParams (RecyclerView.LayoutParams.MatchParent, RecyclerView.LayoutParams.WrapContent));
 
+			//var holder = new MessageCellViewHolder (messageCell);
+			var holder = new MessageCellViewHolder (parent.Context, viewType);
 
-			var messageCell = new MessageCell (parent.Context, viewType);
-
-			var holder = new MessageCellViewHolder (messageCell);
-
-			Log.Debug ($"OnCreateViewHolder > {viewType} : {messageCell} | {holder}");
+			Log.Debug ($"OnCreateViewHolder >> {viewType} : {holder}");
 
 			return holder;
 		}
@@ -105,7 +96,17 @@ namespace NomadCode.BotFramework.Droid
 
 		public override int GetItemViewType (int position)
 		{
-			return Messages [position].Head ? 1 : 0;
+			var message = Messages [position];
+
+			//HACK: fix this
+			if (message.CellHeight < 1)
+			{
+				message.CellHeight = 2;
+
+				message.Head = Messages.IsHead (position);
+			}
+
+			return Messages [position].Head ? MessageCell.HeadCellId : MessageCell.BodyCellId;
 		}
 
 
@@ -138,18 +139,18 @@ namespace NomadCode.BotFramework.Droid
 						break;
 					case NotifyCollectionChangedAction.Remove:
 						NotifyItemRemoved (e.OldStartingIndex);
-					   //TableView.DeleteRows (new [] { NSIndexPath.FromIndex ((nuint)e.OldStartingIndex) }, UITableViewRowAnimation.None);
-					   break;
+						//TableView.DeleteRows (new [] { NSIndexPath.FromIndex ((nuint)e.OldStartingIndex) }, UITableViewRowAnimation.None);
+						break;
 					case NotifyCollectionChangedAction.Replace:
-					   //NotifyItemChanged (e.OldStartingIndex);
-					   NotifyDataSetChanged ();
-					   //TableView.ReloadData ();
-					   break;
+						//NotifyItemChanged (e.OldStartingIndex);
+						NotifyDataSetChanged ();
+						//TableView.ReloadData ();
+						break;
 					case NotifyCollectionChangedAction.Reset:
 						NotifyDataSetChanged ();
-					   //TableView.ReloadData ();
-					   //TableView.SlackScrollToTop (false);
-					   break;
+						//TableView.ReloadData ();
+						//TableView.SlackScrollToTop (false);
+						break;
 				}
 			});
 		}
@@ -164,11 +165,11 @@ namespace NomadCode.BotFramework.Droid
 				switch (e.SocketState)
 				{
 					case SocketStates.Open:
-					   //RightButton.Enabled = true;
-					   break;
+						//RightButton.Enabled = true;
+						break;
 					case SocketStates.Closing:
-					   //RightButton.Enabled = false;
-					   break;
+						//RightButton.Enabled = false;
+						break;
 				}
 			});
 		}

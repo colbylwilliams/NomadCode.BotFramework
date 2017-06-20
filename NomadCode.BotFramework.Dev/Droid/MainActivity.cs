@@ -37,18 +37,51 @@ namespace NomadCode.BotFramework.Dev.Droid
 						{
 							try
 							{
+								BotClient.Shared.ReadyStateChanged += async (sender, e) =>
+								{
+									if (e.SocketState == SocketStates.Open)
+									{
+										var count = 0;
+
+										while (count < 10)
+										{
+											count++;
+
+											switch (count)
+											{
+												case 2:
+													BotClient.Shared.SendMessage ($"Hero card");
+													break;
+												case 3:
+													BotClient.Shared.SendMessage ($"Thumbnail card");
+													break;
+												case 4:
+													BotClient.Shared.SendMessage ($"Receipt card");
+													break;
+												case 5:
+													BotClient.Shared.SendMessage ($"Sign-in card");
+													break;
+												case 6:
+													BotClient.Shared.SendMessage ($"Animation card");
+													break;
+												case 7:
+													BotClient.Shared.SendMessage ($"Video card");
+													break;
+												case 8:
+													BotClient.Shared.SendMessage ($"Audio card");
+													break;
+												default:
+													BotClient.Shared.SendMessage ($"Test {count}");
+													break;
+											}
+
+											await Task.Delay (15000);
+										}
+									}
+								};
+
 								await BotClient.Shared.ConnectSocketAsync (conversationId => client.Tokens.GenerateTokenForNewConversationAsync ());
 
-								var count = 0;
-
-								while (count < 10)
-								{
-									count++;
-
-									BotClient.Shared.SendMessage ($"Test {count}");
-
-									await Task.Delay (15000);
-								}
 							}
 							catch (Exception ex)
 							{

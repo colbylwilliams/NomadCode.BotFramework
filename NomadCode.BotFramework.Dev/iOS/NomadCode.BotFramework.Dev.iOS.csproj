@@ -9,7 +9,7 @@
     <RootNamespace>NomadCode.BotFramework.Dev.iOS</RootNamespace>
     <AssemblyName>NomadCode.BotFramework.Dev.iOS</AssemblyName>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <ReleaseVersion>0.4.4</ReleaseVersion>
+    <ReleaseVersion>0.4.6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,6 +88,27 @@
     <Reference Include="Xamarin.iOS" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="Haneke">
+      <HintPath>..\..\packages\Haneke.1.0.2.1\lib\Xamarin.iOS10\Haneke.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Square.SocketRocket">
+      <HintPath>..\..\packages\Square.SocketRocket.0.5.0.1\lib\Xamarin.iOS\Square.SocketRocket.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Rest.ClientRuntime">
+      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.8\lib\netstandard1.4\Microsoft.Rest.ClientRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="SlackTextViewController">
+      <HintPath>..\..\packages\Xamarin.SlackTextViewController.1.9.5\lib\Xamarin.iOS\SlackTextViewController.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.TTTAttributedLabel">
+      <HintPath>..\..\packages\Xamarin.TTTAttributedLabel.2.0.0.2\lib\Xamarin.iOS\Xamarin.TTTAttributedLabel.dll</HintPath>
+    </Reference>
+    <Reference Include="NomadCode.BotFramework">
+      <HintPath>..\..\packages\NomadCode.BotFramework.0.4.6-preview\lib\xamarinios10\NomadCode.BotFramework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -103,6 +124,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -111,12 +133,6 @@
     <Compile Include="ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\NomadCode.BotFramework.iOS\NomadCode.BotFramework.iOS.csproj">
-      <Project>{FEE592DB-086A-4F1F-BDF2-FC3F95620393}</Project>
-      <Name>NomadCode.BotFramework.iOS</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

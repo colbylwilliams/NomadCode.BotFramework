@@ -98,7 +98,7 @@ Global
 		$2.SpaceBeforeOpenSquareBracket = True
 		$0.TextStylePolicy = $3
 		$3.scope = text/plain
-		version = 0.4.4
+		version = 0.4.6
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B7F1C52E-B665-426D-AB78-3FD26A834FF8} = {56808BDF-1324-41E2-8524-4C07503CA4F7}

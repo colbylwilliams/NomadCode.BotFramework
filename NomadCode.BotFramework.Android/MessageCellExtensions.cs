@@ -82,6 +82,7 @@ namespace NomadCode.BotFramework.Droid
 			//return null;
 		}
 
+
 		static void AddHeroImage (this MessageCell cell, int row, string imageUrl)
 		{
 			var index = cell.AddHeroImage ();
@@ -259,7 +260,7 @@ namespace NomadCode.BotFramework.Droid
 					return height;
 				}
 
-				message.Head = row == messages.Count - 1 || (row + 1 < messages.Count) && (messages [row + 1].Activity.From.Name != message.Activity.From.Name);
+				message.Head = messages.IsHead (row);
 
 				//var bodyBounds = message.HasText ? message.AttributedText.GetBoundingRect (new CGSize (MessageCell.ContentWidth, nfloat.MaxValue), NSStringDrawingOptions.UsesLineFragmentOrigin, null) : CGRect.Empty;
 
